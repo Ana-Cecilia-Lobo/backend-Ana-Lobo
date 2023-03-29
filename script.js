@@ -14,26 +14,6 @@ class ProductManager{
 
         let buscarID = this.productos.find(p => p.id == id)
          
-        if(!buscarID){
-
-            console.log(validar());
-            function validar(){
-
-                let respuesta = "No se encontró el producto que busca";
-                return respuesta;
-            }
-            
-
-        }else{
-
-            console.log(validar());
-            function validar(){
-
-                let respuesta = "El producto que busca es: ";
-                return respuesta;
-            }
-        }
-        
         return buscarID;
     }
 
