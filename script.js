@@ -12,58 +12,80 @@ class ProductManager{
 
     getProductById(id){
 
-        const buscarID = this.productos.find(p => p.id == id)
-        if(buscarID){
+        let buscarID = this.productos.find(p => p.id == id)
+         
+        if(!buscarID){
 
-            console.log("El producto que busca es", buscarID);
+            console.log(validar());
+            function validar(){
+
+                let respuesta = "No se encontró el producto que busca";
+                return respuesta;
+            }
+            
+
         }else{
 
-            console.log("No existe ese producto")
+            console.log(validar());
+            function validar(){
+
+                let respuesta = "El producto que busca es: ";
+                return respuesta;
+            }
         }
         
+        return buscarID;
     }
 
     addProduct(title, description, price, thumbnail, code, stock){
 
-       
-        let newID =  this.productos.length +1 ;
-        const nuevoProducto = {
+       if(!title || !description || !price || !thumbnail || !code || !stock){
 
-            id: newID,
-            title,
-            description,
-            price,
-            thumbnail,
-            code,
-            stock
-        }
+            console.log("Le falta un campo");
 
-        let codigo = code;
+       }else{
 
-        const verificarCode = this.productos.some(cod => cod.code == codigo);
-        
-        if(verificarCode == true){
+            let newID =  this.productos.length +1 ;
+            const nuevoProducto = {
 
-            console.log("Error, ya ha sido agregado")
+                id: newID,
+                title,
+                description,
+                price,
+                thumbnail,
+                code,
+                stock
+            }
 
-        }else{
+            let codigo = code;
 
-            this.productos.push(nuevoProducto);
+            const verificarCode = this.productos.some(cod => cod.code == codigo);
             
+            if(verificarCode == true){
+
+                console.log("Error, ya ha sido agregado");
+
+            }else{
+
+                this.productos.push(nuevoProducto);
+                
+            }
         }
-    }
+    }   
 }
 
 
 const producto = new ProductManager();
-producto.addProduct("platano", "amarillo", 2000, "x", 1224, 2);
+producto.addProduct("platano", "", 2000, "x", 1224, 2);
 console.log(producto.getProducts());
 
+producto.addProduct("platano", "amarillo", 2000, "x", 1224, 2);
+console.log(producto.getProducts());
 
 producto.addProduct("platano", "amarillo", 2000, "x", 1224, 3);
 
 producto.addProduct("manzana", "roja", 2200, "x", 1234, 5);
 console.log(producto.getProducts());
 
-producto.getProductById(1)
-producto.getProductById(3)
+console.log(producto.getProductById(2));
+console.log(producto.getProductById(3));
