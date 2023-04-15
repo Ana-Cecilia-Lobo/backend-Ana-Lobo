@@ -1,0 +1,24 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "\"# backend-Ana-Lobo\"",
+  "main": "ProductManager.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ana-Cecilia-Lobo/backend-Ana-Lobo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ana-Cecilia-Lobo/backend-Ana-Lobo/issues"
+  },
+  "homepage": "https://github.com/Ana-Cecilia-Lobo/backend-Ana-Lobo#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

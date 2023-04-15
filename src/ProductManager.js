@@ -1,6 +1,7 @@
-const fs = require("fs");
+//const fs = require("fs");
+import fs from 'fs'
 
-class ProductManager{
+export default class ProductManager{
 
     constructor(pathName){
         this.path = pathName;
@@ -80,14 +81,14 @@ class ProductManager{
 
                     //console.log(verificarCode)
                     if(repeat == true){
-                        return console.log("Ya se ha agregado este producto")
+                        return //console.log("Ya se ha agregado este producto")
                     }
 
                     products.push(product);
                     await fs.promises.writeFile(this.path,JSON.stringify(products,null,2));
                     return product;
                 }else{
-                    return console.log("Hay un campo vacío");
+                    return //console.log("Hay un campo vacío");
                 }
             }else{
                 //Verificar que los campos esten completos
@@ -102,7 +103,7 @@ class ProductManager{
                     await fs.promises.writeFile(this.path,JSON.stringify([product],null,2));
                     return product;
                 }else{
-                    return console.log("Hay un campo vacío");
+                    return //console.log("Hay un campo vacío");
                 }
             }
         } catch (error) {
@@ -122,7 +123,7 @@ class ProductManager{
                         ...product
                     }
                     await fs.promises.writeFile(this.path,JSON.stringify(products,null,2));
-                    return `El producto con el id ${id} fue modificado`;
+                    return id;
                 } else {
                     throw new Error(`El producto con el id ${id} no existe`);
                 }
@@ -143,7 +144,7 @@ class ProductManager{
                 if(productIndex >= 0){
                     products.splice(productIndex, 1);
                     await fs.promises.writeFile(this.path,JSON.stringify(products,null,2));
-                    return `El producto con el id ${id} fue eliminado`;
+                    return id;
                 } else {
                     throw new Error(`El producto con el id ${id} no existe`);
                 }
@@ -162,23 +163,23 @@ const manager = new ProductManager("./products.json");
 const fucnionPrincipal= async ()=>{
 
     try{
-        const productAdded = await manager.addProduct({title:"cocina", description: "amarilla", price:1300, thumbnail: "aaaa", code: 1111, stock: 3});
-        console.log("productAdded: ", productAdded);
+        //const productAdded = await manager.addProduct({title:"cocina", description: "amarilla", price:1300, thumbnail: "aaaa", code: 1111, stock: 3});
+        //console.log("productAdded: ", productAdded);
 
-        const productAdded2 = await manager.addProduct({title:"nevera", description: "azul", price:1200, thumbnail: "aaa", code: 1222, stock: 5});
-        console.log("productAdded: ", productAdded2);
+        //const productAdded2 = await manager.addProduct({title:"nevera", description: "azul", price:1200, thumbnail: "aaa", code: 1222, stock: 5});
+        //console.log("productAdded: ", productAdded2);
 
-        const getProducts2 = await manager.getProducts();
-        console.log("Productos: ", getProducts2)
+        //const getProducts2 = await manager.getProducts();
+        //console.log("Productos: ", getProducts2)
 
-        const getId = await manager.getProductById(1);
-        console.log("Producto: ", getId)
+        //const getId = await manager.getProductById(2);
+        //console.log("Producto: ", getId)
 
-        const productMod = await manager.updateProducts(2,{title: "nevera"})
-        console.log("producto modificado:", productMod)
+        //const productMod = await manager.updateProducts(2,{title: "nevera"})
+        //console.log("producto modificado:", productMod)
 
-        const productElim = await manager.deleteProducts(1)
-        console.log("product elminido:", productElim)
+        //const productElim = await manager.deleteProducts(1)
+        //console.log("product elminido:", productElim)
 
     }catch(error){
         console.log(error.message);
