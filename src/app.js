@@ -4,7 +4,7 @@ import ProductManager from "./ProductManager.js";
 const app = express();
 const manager = new ProductManager("./products.json");
 
-const port = 8080;
+const port = 8080; 
 
 //Buscar y entregar lista de productos
 app.get("/products",async(req,res)=>{
@@ -14,25 +14,31 @@ app.get("/products",async(req,res)=>{
         if(limit){
             let productsLimit = [];
             for(let i = 0; i < limit; i++){
-                productsLimit.push(products[i])
+                productsLimit.push(products[i]);
             }
             res.json(productsLimit);
         }else{
-            throw new Error
+            res.json(products);
         }
     }catch{
-        res.json(products)
+        res.json("Error, archivo no encontrado");
     }
 });
 
 //Buscar productos por id 
 app.get("/products/:pid",async(req,res)=>{
     try{
-        const id = req.params.pid;
-        const productId = await manager.getProductById(id);
-        res.json(productId)
+        const id = parseFloat(req.params.pid);
+        console.log(typeof(id), id);
+        if(id){
+            const productId = await manager.getProductById(id);
+            res.json(productId);
+        }else{
+            res.json("Error, el id no es un número");
+        }
+        
     }catch{
-        res.status(500).json("Producto no encontrado")
+        res.status(500).json("Producto no encontrado");
     } 
 });
 
