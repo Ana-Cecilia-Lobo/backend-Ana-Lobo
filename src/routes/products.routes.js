@@ -21,7 +21,7 @@ router.get("/",async(req, res)=>{
             res.json({status:"success", data: products});
         }
     }catch(error){
-        res.json({status: "error", data: error.message});
+        res.status(400).json({status: "error", data: error.message});
     }
 });
 
@@ -34,10 +34,10 @@ router.get("/:pid",async(req,res)=>{
             const productId = await manager.getProductById(id);
             res.json({status:"success", data: productId});
         }else{
-            res.json({status: "error", data: "el id no es un numero"});
+            res.status(400).json({status: "error", data: "el id no es un numero"});
         } 
     }catch(error){
-        res.json({status: "error", data: error.message});
+        res.status(400).json({status: "error", data: error.message});
     } 
 });
 
@@ -49,11 +49,9 @@ router.post("/",async(req,res)=>{
         const add = await manager.addProduct(product);
         if(add){
             res.json({status:"success", data: product});
-        }else{
-            res.json("Error");
         }
     }catch(error){
-        res.json({status: "error", data: error.message});
+        res.status(400).json({status: "error", data: error.message});
     }
 });
 
@@ -67,10 +65,10 @@ router.put("/:pid", async(req, res)=>{
             const update = await manager.updateProducts(id, product);
             res.json({status: "success", data: update})
         }else{
-            res.json("Error, el id no es un número");
+            res.status(400).json("Error, el id no es un número");
         } 
     }catch(error){
-        res.json({status: "error", data: error.message});
+        res.status(400).json({status: "error", data: error.message});
     }
 
 });
@@ -83,10 +81,10 @@ router.delete("/:pid", async(req, res)=>{
             const deleteProduct = await manager.deleteProducts(id);
             res.json({status: "success", data: "Se ha eliminado el producto con el id: " + deleteProduct})
         }else{
-            res.json("Error, el id no es un número");
+            res.status(400).json("Error, el id no es un número");
         } 
     }catch(error){
-        res.json({status: "error", data: error.message});
+        res.status(400).json({status: "error", data: error.message});
     }
 });
 

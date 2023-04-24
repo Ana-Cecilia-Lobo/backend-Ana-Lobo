@@ -14,7 +14,7 @@ router.post("/",async(req, res)=>{
         const create = await manager.addCart();
         res.json({status:"success", data:create});
     } catch (error) {
-        res.json({status:"error", message:error.message});
+        res.status(400).json({status:"error", message:error.message});
     }
 
 });
@@ -26,10 +26,10 @@ router.get("/:cid",async(req,res)=>{
             const cartId = await manager.getCartById(id);
             res.json({status:"success", data: cartId});
         }else{
-            res.json({status: "error", data: "el id no es un numero"});
+            res.status(400).json({status: "error", data: "el id no es un numero"});
         } 
     }catch(error){
-        res.json({status: "error", data: error.message});
+        res.status(400).json({status: "error", data: error.message});
     } 
 });
 

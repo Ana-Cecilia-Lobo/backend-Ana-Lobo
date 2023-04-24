@@ -99,5 +99,15 @@
     "category": "nose",
     "thumbnails": "aa",
     "id": 11
+  },
+  {
+    "title": "guitarra",
+    "description": "roja",
+    "code": 1122,
+    "price": 1600,
+    "status": true,
+    "stock": 13,
+    "category": "x",
+    "id": 12
   }
 ]
