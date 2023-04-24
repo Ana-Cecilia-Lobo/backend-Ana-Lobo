@@ -1,4 +1,3 @@
-//const fs = require("fs");
 import fs from 'fs'
 
 export default class ProductManager{
@@ -61,7 +60,20 @@ export default class ProductManager{
                 //Verificar que los campos esten completos
                 const verifyKeys = Object.keys(product);
                 const verifyValues = Object.values(product);
-                const includesKeys = verifyKeys.includes("title", 'description', 'price', 'thumbnail','code','stock')
+
+                const thumbnails = verifyKeys.includes("thumbnails");
+                let includesKeys;
+                if(thumbnails){
+                    const keys = ['title', 'description','code','price','status','stock', 'category', 'thumbnails'];
+                    verifyKeys.sort();
+                    keys.sort();
+                    includesKeys = keys.every(function(v,i) { return v === verifyKeys[i] } );
+                }else{
+                    const keys = ['title', 'description','code','price','status','stock', 'category'];
+                    verifyKeys.sort();
+                    keys.sort();
+                    includesKeys = keys.every(function(v,i) { return v === verifyKeys[i] } );
+                }
                 const includesValues =  verifyValues.includes(undefined);
 
                 if(includesKeys == true && includesValues == false){
@@ -79,23 +91,35 @@ export default class ProductManager{
                         }
                     });
 
-                    //console.log(verificarCode)
                     if(repeat == true){
-                        return //console.log("Ya se ha agregado este producto")
+                        throw new Error("El producto ya existe")
                     }
 
                     products.push(product);
                     await fs.promises.writeFile(this.path,JSON.stringify(products,null,2));
                     return product;
                 }else{
-                    return //console.log("Hay un campo vacío");
+                    throw new Error("Hay campos vacíos")
                 }
             }else{
                 //Verificar que los campos esten completos
                 const verifyKeys = Object.keys(product);
                 const verifyValues = Object.values(product);
+
+                const thumbnails = verifyKeys.includes("thumbnails");
+                let includesKeys;
+                if(thumbnails){
+                    const keys = ['title', 'description','code','price','status','stock', 'category', 'thumbnails'];
+                    verifyKeys.sort();
+                    keys.sort();
+                    includesKeys = keys.every(function(v,i) { return v === verifyKeys[i] } );
+                }else{
+                    const keys = ['title', 'description','code','price','status','stock', 'category'];
+                    verifyKeys.sort();
+                    keys.sort();
+                    includesKeys = keys.every(function(v,i) { return v === verifyKeys[i] } );
+                }
                 const includesValues =  verifyValues.includes(undefined);
-                const includesKeys = verifyKeys.includes("title", 'description', 'price', 'thumbnail','code','stock')
 
                 if(includesKeys == true && includesValues == false){
                     const productId = this.generateId([]);
@@ -103,7 +127,7 @@ export default class ProductManager{
                     await fs.promises.writeFile(this.path,JSON.stringify([product],null,2));
                     return product;
                 }else{
-                    return //console.log("Hay un campo vacío");
+                    throw new Error("Hay campos vacíos")
                 }
             }
         } catch (error) {
@@ -122,8 +146,14 @@ export default class ProductManager{
                         ...products[productIndex],
                         ...product
                     }
-                    await fs.promises.writeFile(this.path,JSON.stringify(products,null,2));
-                    return id;
+                    const productId = products[productIndex].id;
+                    if(id == productId){
+                        await fs.promises.writeFile(this.path,JSON.stringify(products,null,2));
+                        return products[productIndex];
+                    }else{
+                        throw new Error("No se puede modificar el id");
+                    }
+
                 } else {
                     throw new Error(`El producto con el id ${id} no existe`);
                 }
@@ -175,7 +205,7 @@ const fucnionPrincipal= async ()=>{
         //const getId = await manager.getProductById(2);
         //console.log("Producto: ", getId)
 
-        //const productMod = await manager.updateProducts(2,{title: "nevera"})
+        //const productMod = await manager.updateProducts(2,{title: "neveraa"})
         //console.log("producto modificado:", productMod)
 
         //const productElim = await manager.deleteProducts(1)

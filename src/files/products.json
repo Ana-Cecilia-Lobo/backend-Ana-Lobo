@@ -1,7 +1,7 @@
 [
   {
     "title": "microondas",
-    "description": "grande",
+    "description": "muy muy grande",
     "price": 1000,
     "thumbnail": "a",
     "code": 1111,
@@ -9,7 +9,7 @@
     "id": 1
   },
   {
-    "title": "nevera",
+    "title": "neveraa",
     "description": "azul",
     "price": 1200,
     "thumbnail": "aa",
@@ -88,5 +88,16 @@
     "code": 1120,
     "stock": 25,
     "id": 10
+  },
+  {
+    "title": "hervidor",
+    "description": "rosa",
+    "code": 1121,
+    "price": 600,
+    "status": true,
+    "stock": 10,
+    "category": "nose",
+    "thumbnails": "aa",
+    "id": 11
   }
 ]
