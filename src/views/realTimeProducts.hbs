@@ -1,20 +1,52 @@
-<label id="label">Title</label>
-<input type="text" id="data">
-<label id="label">Description</label>
-<input type="text" id="data">
-<label id="label">Code</label>
-<input type="number" id="data">
-<label id="label">Price</label>
-<input type="number" id="data">
-<label id="label">Status</label>
-<input type="checkbox" id="data">
-    "status": true,
-    "stock": 10,
-    "category": "nose",
-    "thumbnails": "aa",
+<h2>Agregar productos</h2>
+<form action="http://localhost:8080/realtimeproducts" method="post">
+    <label for="title">Title</label>
+    <input type="text" class="data" name="title">
+    <label for="description">Description</label>
+    <input type="text" class="data" name="description">
+    <label for="code">Code</label>
+    <input type="number" class="data" name="code">
+    <label for="price">Price</label>
+    <input type="number" class="data" name="price">
+    <label for="status">Status</label>
+    <input type="text" class="data" name="status">
+    <label for="stock">Stock</label>
+    <input type="number" class="data" name="stock">
+    <label for="category">Category</label>
+    <input type="text" class="data" name="category">
+    <label for="thumbnails">Thumbnails</label>
+    <input type="text" class="data" name="thumbnails">    
 
-<button id="sendButton">Enviar mensaje</button>
-<div id="chatHistory"></div>
+    <button id="sendButton">Enviar mensaje</button>
+    
+</form>
+
+<h1>Productos</h1>
+<div>
+    <ol id="prodHistory">
+        {{#each renProducts}}
+        <li>
+            <ul>
+                <li>{{this.title}}</li>
+                <li>{{this.description}}</li>
+                <li>{{this.code}}</li>
+                <li>{{this.price}}</li>
+                <li>{{this.status}}</li>
+                <li>{{this.stock}}</li>
+                <li>{{this.category}}</li>
+                {{#if this.thumbnails}}
+                    <li>{{this.thumbnails}}</li>
+                {{/if}}
+                <li>{{this.id}}</li>
+            </ul>
+        </li>
+        <br>
+    {{/each}}
+    </ol>
+</div>
+
+
+
 
 <script src="socket.io/socket.io.js"></script>
 <script src="js/home.js"></script>

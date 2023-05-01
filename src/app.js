@@ -35,15 +35,17 @@ const httpServer = app.listen(port,()=>console.log(`Server listening on port ${p
 const socketServer = new Server(httpServer);
 
 
-let messages = [];
+let products = [];
 socketServer.on("connection",(socket)=>{
     console.log(`nuevo socket cliente conectado ${socket.id}`);
     //emitir el mensaje al socket actual
-    socket.emit("chatMessages",messages);
+    //socket.emit("addProd", producto);
 
-    socket.on("message",(data)=>{
-        messages.push({socketId:socket.id, message:data});
+    socket.on("producto",(data)=>{
+        const producto = JSON.stringify(data);
+        console.log(producto)
+        //console.log("app.js", producto)
         //emitir el mensaje a todos los clientes conectados
-        socketServer.emit("chatMessages",messages);
+        socketServer.emit("addProd", producto);
     });
 });

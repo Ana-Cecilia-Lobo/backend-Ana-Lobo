@@ -109,5 +109,16 @@
     "stock": 13,
     "category": "x",
     "id": 12
+  },
+  {
+    "title": "botella",
+    "description": "plastica",
+    "code": "59574",
+    "price": "200",
+    "status": "true",
+    "stock": "7",
+    "category": "ererer",
+    "thumbnails": "erff",
+    "id": 13
   }
 ]

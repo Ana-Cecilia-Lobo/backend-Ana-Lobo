@@ -57,7 +57,6 @@ export default class ProductManager{
         try {
             if(this.fileExists()){
 
-                //Verificar que los campos esten completos
                 const verifyKeys = Object.keys(product);
                 const verifyValues = Object.values(product);
 
@@ -74,9 +73,10 @@ export default class ProductManager{
                     keys.sort();
                     includesKeys = keys.every(function(v,i) { return v === verifyKeys[i] } );
                 }
-                const includesValues =  verifyValues.includes(undefined);
 
-                if(includesKeys == true && includesValues == false){
+                const includesValues =  verifyValues.includes("");
+
+                if(includesKeys === true && includesValues === false){
 
                     const content = await fs.promises.readFile(this.path,"utf-8");
                     const products = JSON.parse(content);
@@ -119,7 +119,8 @@ export default class ProductManager{
                     keys.sort();
                     includesKeys = keys.every(function(v,i) { return v === verifyKeys[i] } );
                 }
-                const includesValues =  verifyValues.includes(undefined);
+
+                const includesValues =  verifyValues.includes("");
 
                 if(includesKeys == true && includesValues == false){
                     const productId = this.generateId([]);
@@ -188,12 +189,12 @@ export default class ProductManager{
     }
 }   
 
-const manager = new ProductManager("./products.json");
+const manager = new ProductManager("./src/files/products.json");
 
 const fucnionPrincipal= async ()=>{
 
     try{
-        //const productAdded = await manager.addProduct({title:"cocina", description: "amarilla", price:1300, thumbnail: "aaaa", code: 1111, stock: 3});
+        //const productAdded = await manager.addProduct({title: '22',description: '3',code: '4', price: '5',status: '6', stock: '6',category: '6',thumbnails: ''});
         //console.log("productAdded: ", productAdded);
 
         //const productAdded2 = await manager.addProduct({title:"nevera", description: "azul", price:1200, thumbnail: "aaa", code: 1222, stock: 5});
