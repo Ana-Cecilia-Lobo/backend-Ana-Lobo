@@ -33,19 +33,3 @@ const httpServer = app.listen(port,()=>console.log(`Server listening on port ${p
 
 //Servidor Websocket
 const socketServer = new Server(httpServer);
-
-
-let products = [];
-socketServer.on("connection",(socket)=>{
-    console.log(`nuevo socket cliente conectado ${socket.id}`);
-    //emitir el mensaje al socket actual
-    //socket.emit("addProd", producto);
-
-    socket.on("producto",(data)=>{
-        const producto = JSON.stringify(data);
-        console.log(producto)
-        //console.log("app.js", producto)
-        //emitir el mensaje a todos los clientes conectados
-        socketServer.emit("addProd", producto);
-    });
-});

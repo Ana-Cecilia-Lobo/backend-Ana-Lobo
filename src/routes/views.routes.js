@@ -51,10 +51,10 @@ router.post("/realtimeproducts",async(req,res)=>{
         const product = req.body;
         const add = await manager.addProduct(product);
         if(add){
-            //res.render("realTimeProducts")
+            res.redirect("/realtimeproducts")
         }
     }catch(error){
-        res.status(400).json({status: "error", data: error.message});
+        res.redirect("/realtimeproducts")
     }
 });
 
