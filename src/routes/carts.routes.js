@@ -1,9 +1,9 @@
 import {Router} from "express";
-import CartManager from "../managers/CartManager.js";
-import ProductManager from "../managers/ProductManager.js";
+import CartManager from "../dao/managers/CartManager.js";
+import ProductManager from "../dao/managers/ProductManager.js";
 
-const p_manager = new ProductManager("./files/products.json");
-const manager = new CartManager("./files/carts.json");
+const p_manager = new ProductManager("./dao/files/products.json");
+const manager = new CartManager("./dao/files/carts.json");
 const router = Router();
 
 //Ruta principal api/cart

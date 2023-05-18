@@ -122,28 +122,6 @@
     "id": 13
   },
   {
-    "title": "343443",
-    "description": "433434",
-    "code": "434",
-    "price": "434345678",
-    "status": "4343",
-    "stock": "3443",
-    "category": "434",
-    "thumbnails": "344",
-    "id": 14
-  },
-  {
-    "title": "1",
-    "description": "1",
-    "code": "1",
-    "price": "1",
-    "status": "1",
-    "stock": "1",
-    "category": "1",
-    "thumbnails": "1",
-    "id": 15
-  },
-  {
     "title": "licuadora",
     "description": "pro",
     "code": "1122334",
@@ -152,6 +130,28 @@
     "stock": "27",
     "category": "cocina",
     "thumbnails": "sdsdfd",
+    "id": 14
+  },
+  {
+    "title": "56",
+    "description": "56",
+    "code": "56",
+    "price": "56",
+    "status": "true",
+    "stock": "56",
+    "category": "56",
+    "thumbnails": "56",
+    "id": 15
+  },
+  {
+    "title": "rt",
+    "description": "rttr",
+    "code": "rtrt",
+    "price": "rtrt",
+    "status": "true",
+    "stock": "rtrt",
+    "category": "rtrt",
+    "thumbnails": "rtrt",
     "id": 16
   }
 ]

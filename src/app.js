@@ -1,11 +1,13 @@
 import express from "express";
 import handlebars from "express-handlebars";
+import path from "path";
+import { Server } from "socket.io";
+
 import { __dirname } from "./utils.js";
 import { viewsRouter } from "./routes/views.routes.js";
 import { ProductRouter } from "./routes/products.routes.js";
 import { CartRouter } from "./routes/carts.routes.js";
-import path from "path";
-import { Server } from "socket.io";
+import ProductManager from "./dao/managers/ProductManager.js";
 
 const app = express();
 const port = 8080; 
@@ -13,8 +15,6 @@ const port = 8080;
 
 //Middlewares
 app.use(express.static(path.join(__dirname,"/public")));
-
-
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
@@ -32,4 +32,29 @@ app.use("/", viewsRouter);
 const httpServer = app.listen(port,()=>console.log(`Server listening on port ${port}`));
 
 //Servidor Websocket
-const socketServer = new Server(httpServer);
+const io = new Server(httpServer);
+
+
+const manager = new ProductManager("./dao/files/products.json");
+
+//configuración webSocket
+io.on("connection", async (socket) => {
+	console.log("id: " + socket.client.conn.id);
+	
+	const items = await manager.getProducts();
+	socket.emit("itemShow", items);
+	console.log(items)
+
+	socket.on("item", async (product) => {
+        try{
+			//console.log(product)
+            await manager.addProduct(product);
+		    const items = await manager.getProducts();
+			//console.log(items)
+		    io.emit("itemShow", items);
+        }catch(error){
+            console.log({status: "error", data: error.message});
+        }
+		
+	});
+});

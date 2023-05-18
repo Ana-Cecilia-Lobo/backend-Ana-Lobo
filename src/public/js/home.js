@@ -1,34 +1,51 @@
-/*
 const socketClient = io()
 
+const form = document.getElementById("form");
+const products = document.getElementById("products");
 
-const data = document.getElementsByClassName("data");
-const sendButton = document.getElementById("sendButton");
-const prodHistory = document.getElementById("prodHistory");
-
-
-sendButton.addEventListener("click",(e)=>{
-    const product = []
-    for (let i = 0; i < data.length; i++) {
-        product.push(data[i].value)
-      }
-
-    const productoFinal = {"title" : product[0], "description" : product[1], "code" : product[2], "price" : product[3], "status" : product[4], "stock" : product[5], "category" : product[6], "thumbnails" : product[7]};
-    
-    socketClient.emit("producto",productoFinal);
+form.addEventListener("submit", (evt) => {
+	evt.preventDefault();
+	const title = evt.target.elements.title.value;
+	const description = evt.target.elements.description.value;
+	const code = evt.target.elements.code.value;
+	const price = evt.target.elements.price.value;
+	const stock = evt.target.elements.stock.value;
+	const category = evt.target.elements.category.value;
+	const thumbnails = evt.target.elements.thumbnails.value;
+	const product = {
+		title: title,
+		description: description,
+		code: code,
+		price: price,
+		status: "true",
+		stock: stock,
+		category: category,
+		thumbnails: thumbnails,
+	};
+	socketClient.emit("item", product);
+	form.reset();
 });
 
-
-socketClient.on("addProd",(data)=>{
-    prodHistory.innerHTML="";
-    data.forEach(item=> {
-        //crear un parrafo por mensaje
-        const li = document.createElement("li");
-        const ul = document.createElement("ul");
-        const p = document.createElement("p");
-        p.innerHTML = item;
-        prodHistory.appendChild(li);
-        li.appendChild(ul);
-        ul.appendChild(p);
-    });
-});*/
+socketClient.on("itemShow", (data) => {
+	products.innerHTML = "";
+	data.forEach((product) => {
+		const elements = document.createElement("div");
+		elements.id = product.id;
+		elements.innerHTML = `
+		<li>
+            <ul>
+                <li>Id: ${product.id}</li>
+                <li>Producto: ${product.title} </li>
+                <li>Descripcion: ${product.description}</li>
+                <li>Codigo: ${product.code}</li>
+                <li>Precio: ${product.price}</li>
+                <li>Estado: ${product.status}</li>
+                <li>Stock: ${product.stock}</li>
+                <li>Categoria: ${product.category}</li>
+            </ul>
+        </li>
+		<br>
+		`;
+		products.appendChild(elements);
+	});
+});

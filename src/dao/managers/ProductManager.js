@@ -1,4 +1,8 @@
 import fs from 'fs'
+import {__dirname} from "../../utils.js";
+import {options} from "../../config/options.js";
+import path from "path";
+//Arreglar ruta usando dirname, path y options 32:00
 
 export default class ProductManager{
 
@@ -7,6 +11,7 @@ export default class ProductManager{
     }
 
     fileExists(){
+        console.log(this.path)
         return fs.existsSync(this.path);
     }
 
@@ -17,7 +22,7 @@ export default class ProductManager{
                 const contenidoJson = JSON.parse(contenido);
                 return contenidoJson;
             }else{
-                throw new Error("El archivo no existe");
+                throw new Error("El archivo no existe aca");
             }
         }catch(error){
             throw new Error(error.message);
@@ -189,7 +194,7 @@ export default class ProductManager{
     }
 }   
 
-const manager = new ProductManager("./src/files/products.json");
+//const manager = new ProductManager("../files/products.json");
 
 const fucnionPrincipal= async ()=>{
 
@@ -197,20 +202,8 @@ const fucnionPrincipal= async ()=>{
         //const productAdded = await manager.addProduct({title: '22',description: '3',code: '4', price: '5',status: '6', stock: '6',category: '6',thumbnails: ''});
         //console.log("productAdded: ", productAdded);
 
-        //const productAdded2 = await manager.addProduct({title:"nevera", description: "azul", price:1200, thumbnail: "aaa", code: 1222, stock: 5});
-        //console.log("productAdded: ", productAdded2);
-
         //const getProducts2 = await manager.getProducts();
-        //console.log("Productos: ", getProducts2)
-
-        //const getId = await manager.getProductById(2);
-        //console.log("Producto: ", getId)
-
-        //const productMod = await manager.updateProducts(2,{title: "neveraa"})
-        //console.log("producto modificado:", productMod)
-
-        //const productElim = await manager.deleteProducts(1)
-        //console.log("product elminido:", productElim)
+        //console.log("Productos: ", getProducts2);
 
     }catch(error){
         console.log(error.message);
