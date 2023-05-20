@@ -8,6 +8,8 @@ import { viewsRouter } from "./routes/views.routes.js";
 import { ProductRouter } from "./routes/products.routes.js";
 import { CartRouter } from "./routes/carts.routes.js";
 import ProductManager from "./dao/managers/ProductManager.js";
+import { connectDB } from "./config/dbConnection.js";
+import {ChatMongo} from "./dao/managers/chat.mongo.js";
 
 const app = express();
 const port = 8080; 
@@ -22,6 +24,9 @@ app.use(express.urlencoded({extended:true}));
 app.engine('.hbs', handlebars.engine({extname: '.hbs'}));
 app.set("views",path.join(__dirname,"/views"));
 app.set('view engine', '.hbs');
+
+//Conexión a base de datos
+connectDB();
 
 //rutas
 app.use("/api/products", ProductRouter);
@@ -57,4 +62,20 @@ io.on("connection", async (socket) => {
         }
 		
 	});
+});
+
+
+
+//configuracion del chat
+const chatService = new ChatMongo();
+io.on("connection",async(socket)=>{
+    const messages = await chatService.getMessages();
+    io.emit("msgHistory", messages);
+
+    //recibir el mensaje del cliente
+    socket.on("message",async(data)=>{
+        await chatService.addMessage(data);
+        const messages = await chatService.getMessages();
+        io.emit("msgHistory", messages);
+    });
 });

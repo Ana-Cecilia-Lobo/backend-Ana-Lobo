@@ -1,7 +1,9 @@
 import {Router} from "express";
 import ProductManager from "../dao/managers/ProductManager.js";
+import { ProductsMongo } from "../dao/managers/ProductManager.mongo.js";
 
-const manager = new ProductManager("./dao/files/products.json");
+//const manager = new ProductManager("./dao/files/products.json");
+const manager = new ProductsMongo("./dao/files/products.json");
 const router = Router();
 
 //Ruta principal api/products

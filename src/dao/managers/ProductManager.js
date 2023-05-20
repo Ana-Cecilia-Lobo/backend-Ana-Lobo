@@ -22,7 +22,7 @@ export default class ProductManager{
                 const contenidoJson = JSON.parse(contenido);
                 return contenidoJson;
             }else{
-                throw new Error("El archivo no existe aca");
+                throw new Error("El archivo no existe");
             }
         }catch(error){
             throw new Error(error.message);

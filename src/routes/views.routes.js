@@ -25,6 +25,9 @@ router.get("/",async(req, res)=>{
     }
 });
 
+router.get("/chat",(req,res)=>{
+    res.render("chat");
+});
 
 router.get("/realtimeproducts",async(req,res)=>{
     try{
