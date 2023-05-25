@@ -6,8 +6,8 @@ import path from "path";
 
 export default class ProductManager{
 
-    constructor(pathName){
-        this.path = pathName;
+    constructor(){
+        this.path = path.join(__dirname,`/dao/files/${options.filesystem.products}`);
     }
 
     fileExists(){
@@ -202,6 +202,7 @@ const fucnionPrincipal= async ()=>{
         //const productAdded = await manager.addProduct({title: '22',description: '3',code: '4', price: '5',status: '6', stock: '6',category: '6',thumbnails: ''});
         //console.log("productAdded: ", productAdded);
 
+        
         //const getProducts2 = await manager.getProducts();
         //console.log("Productos: ", getProducts2);
 

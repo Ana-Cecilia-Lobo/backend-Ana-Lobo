@@ -7,8 +7,8 @@ import path from "path";
 
 export default class CartManager{
 
-    constructor(pathName){
-        this.path = pathName;
+    constructor(){
+        this.path =  path.join(__dirname,`/dao/files/${options.filesystem.carts}`);
     }
 
     fileExists(){

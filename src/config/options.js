@@ -1,7 +1,7 @@
 
 export const options = {
-    fylesystem:{
-        products:"products.json",
+    filesystem:{
+        products: "products.json",
         carts:"carts.json"
     },
     server:{

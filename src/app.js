@@ -14,7 +14,7 @@ import {ChatMongo} from "./dao/managers/chat.mongo.js";
 const app = express();
 const port = 8080; 
 
-
+ 
 //Middlewares
 app.use(express.static(path.join(__dirname,"/public")));
 app.use(express.json());
