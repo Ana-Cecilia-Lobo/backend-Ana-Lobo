@@ -62,9 +62,9 @@ router.post("/",async(req,res)=>{
 router.put("/:pid", async(req, res)=>{
     try{
         const product = req.body;
-        const id = Number(req.params.pid);
+        const id = req.params.pid;
         if(id){
-            const update = await manager.updateProducts(id, product);
+            const update = await manager.updateProduct(id, product);
             res.json({status: "success", data: update})
         }else{
             res.status(400).json("Error, el id no es un número");

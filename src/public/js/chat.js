@@ -6,11 +6,19 @@ const sendMessage = document.getElementById("sendMessage");
 const msgContainer = document.getElementById("msgContainer");
 
 sendMessage.addEventListener("click",()=>{
-    socketClient.emit("message",{
-        user:chatEmail.value,
-        message:chatInput.value
-    });
-    chatInput.value = "";
+    const email = chatEmail.value;
+    const validEmail= /^\w+([.-_+]?\w+)@\w+([.-]?\w+)(\.\w{2,10})+$/;
+    if(validEmail.test(email)){
+
+        socketClient.emit("message",{
+            user: email,
+            message:chatInput.value
+        });
+        chatInput.value = "";
+    }else{
+        alert("Email inválido")
+    }
+    
 });
 
 socketClient.on("msgHistory",(data)=>{

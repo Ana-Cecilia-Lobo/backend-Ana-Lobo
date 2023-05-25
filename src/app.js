@@ -10,6 +10,7 @@ import { CartRouter } from "./routes/carts.routes.js";
 import ProductManager from "./dao/managers/ProductManager.js";
 import { connectDB } from "./config/dbConnection.js";
 import {ChatMongo} from "./dao/managers/chat.mongo.js";
+import { ProductsMongo } from "./dao/managers/ProductManager.mongo.js";
 
 const app = express();
 const port = 8080; 
@@ -40,7 +41,7 @@ const httpServer = app.listen(port,()=>console.log(`Server listening on port ${p
 const io = new Server(httpServer);
 
 
-const manager = new ProductManager("./dao/files/products.json");
+const manager = new ProductsMongo("./dao/files/products.json");
 
 //configuración webSocket
 io.on("connection", async (socket) => {

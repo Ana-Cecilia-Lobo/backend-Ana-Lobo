@@ -153,5 +153,16 @@
     "category": "rtrt",
     "thumbnails": "rtrt",
     "id": 16
+  },
+  {
+    "title": "lámpara",
+    "description": "luz blanca",
+    "code": "2232",
+    "price": "275",
+    "status": "true",
+    "stock": "28",
+    "category": "iluminacion",
+    "thumbnails": "gdgdf",
+    "id": 17
   }
 ]
