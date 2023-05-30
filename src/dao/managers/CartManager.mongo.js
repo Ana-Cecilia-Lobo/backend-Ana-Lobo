@@ -1,4 +1,4 @@
-import { cartsModel } from "../models/carts.models";
+import { cartsModel } from "../models/carts.models.js";
 
 export class CartsMongo{
 
@@ -30,14 +30,68 @@ export class CartsMongo{
 
     async addProductToCart(cartId,productId){
         try {
-            const data = await this.model.findByIdAndUpdate(cartId,productId,{new:true});
-            if(!data){
-                throw new Error("El carrito no existe")
+            const data = await this.model.findByIdAndUpdate(
+                { _id: cartId },
+                { $push: { products: { product: productId, quantity: 1 } } },
+                { new: true }
+              ).populate({ path: 'products', select: '_id' });
+             
+                return data
+
+            /*
+            const cart = await this.model.findById(cartId)
+            console.log(cart)
+
+            if(cart){
+                const verifyExistance = cart.products.findIndex(p => p._id === productId);
+                if(verifyExistance >= 0){
+
+                }
             }
-            return data;
+            
+            //const verify_product = await this.model.findById
+                const data = await this.model.findOneAndUpdate(
+                    { _id: cartId },
+                    { $push: { products: { _id: productId } } },
+                    { $inc: { products: { "products.$.quantity": 1 } }},
+                    { new: true }
+                    );
+
+           return data;*/
             
         } catch (error) {
             throw new Error(error.message);
         }
+    }
+
+    async deleteProducts(cartId,productId){
+        try {
+            const data =  await this.model.findOneAndUpdate(
+                { _id: cartId}, 
+                { $pull: { products: { _id: productId } } }
+                  );
+            
+                return data
+            
+        } catch (error) {
+            
+        }
+    }
+
+    async deleteProducts(cartId){
+        try {
+            const data =  await this.model.findOneAndUpdate(
+                { _id: cartId}, 
+                { $pull: { products } }
+                  );
+            
+                return data
+        } catch (error) {
+            
+        }
+        }
+
+    async deleteCart(cartId){
+        
     }
 }

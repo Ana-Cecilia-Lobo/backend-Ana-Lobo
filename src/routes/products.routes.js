@@ -11,17 +11,60 @@ const router = Router();
 //Obtener productos
 router.get("/",async(req, res)=>{
     try{
-        const products = await manager.getProducts();
-        const limit = req.query.limit;
-        if(limit){
-            let productsLimit = [];
-            for(let i = 0; i < limit; i++){
-                productsLimit.push(products[i]);
+
+        const {limit=10,page=1,sort,category,stock} = req.query;
+
+        if(sort){
+            if(!["asc","desc"].includes(sort)){
+                res.json({status:"error", message:"ordenamiento no válido, solo puede ser asc o desc"})
             }
-            res.json({status:"success", data: productsLimit});
-        }else{
-            res.json({status:"success", data: products});
         }
+            
+        const sortValue = sort === "asc" ? 1 : -1;
+        const stockValue = stock === 0 ? undefined : parseInt(stock);
+
+        let query = {};
+
+        if(category && stock){
+            query = {category: category, stock: stockValue}
+        }else{
+            if(category || stockValue){
+                if(category){
+                    query={category: category}
+                }else{
+                    query={stock: stockValue}
+                }
+            }
+        }
+
+        const baseUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
+
+        const result = await manager.getPaginate(query, {
+            page,
+            limit,
+            sort:{price: sortValue},
+            lean:true
+        });
+       
+        const response ={
+            status:"success",
+            payload:result.docs,
+            totalPages:result.totalPages,
+            prevPage: result.prevPage,
+            nextPage: result.nextPage,
+            page:result.page,
+            hasPrevPage:result.hasPrevPage,
+            hasNextPage:result.hasNextPage,
+            prevLink: result.hasPrevPage ? `${baseUrl}?page=${result.prevPage}` : null,
+            nextLink: result.hasNextPage ? `${baseUrl}?page=${result.nextPage}` : null,
+        }
+        console.log("response: ", response);
+        res.json(response)
+
+
+
+        //const products = await manager.getProducts();
+
     }catch(error){
         res.status(400).json({status: "error", data: error.message});
     }
@@ -31,7 +74,7 @@ router.get("/",async(req, res)=>{
 //Obtener productos por id
 router.get("/:pid",async(req,res)=>{
     try{
-        const id = Number(req.params.pid);
+        const id = req.params.pid;
         if(id){
             const productId = await manager.getProductById(id);
             res.json({status:"success", data: productId});
@@ -78,7 +121,7 @@ router.put("/:pid", async(req, res)=>{
 //Eliminar productos
 router.delete("/:pid", async(req, res)=>{
     try{
-        const id = Number(req.params.pid);
+        const id = req.params.pid;
         if(id){
             const deleteProduct = await manager.deleteProducts(id);
             res.json({status: "success", data: "Se ha eliminado el producto con el id: " + deleteProduct})
