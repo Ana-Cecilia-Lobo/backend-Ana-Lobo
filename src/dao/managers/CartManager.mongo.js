@@ -17,7 +17,7 @@ export class CartsMongo{
 
     async getCartById(id){
         try {
-            const cart = await this.model.findById(id);
+            const cart = await this.model.findById(id).lean().populate('products.productId');
             if(cart){
                 return cart;
             }else{
@@ -28,70 +28,104 @@ export class CartsMongo{
         }
     }
 
-    async addProductToCart(cartId,productId){
+    async addProductToCart(cartId,productID){
         try {
-            const data = await this.model.findByIdAndUpdate(
-                { _id: cartId },
-                { $push: { products: { product: productId, quantity: 1 } } },
-                { new: true }
-              ).populate({ path: 'products', select: '_id' });
-             
-                return data
-
-            /*
             const cart = await this.model.findById(cartId)
-            console.log(cart)
-
             if(cart){
-                const verifyExistance = cart.products.findIndex(p => p._id === productId);
-                if(verifyExistance >= 0){
+                const arrayCart = cart.products;
+                const productIds = arrayCart.map((item) => item.productId.toString())
+                const verifyExistance = productIds.includes(productID)
+                console.log(verifyExistance)
 
+                if(verifyExistance == true){
+
+                    const data =await this.model.findOneAndUpdate(
+                        { _id: cartId, "products.productId": productID},                  
+                        { $inc: { "products.$.quantity": 1 } },
+                        { new: true });
+                        console.log(data)
+                    const cart = await this.model.find({_id: cartId}).populate('products.productId');
+                    return cart    
+                }else{
+                    const data = await this.model.findOneAndUpdate(
+                        { _id: cartId},
+                        { $push: { products: { productId: productID, quantity: 1 } } },
+                        );  
+                        console.log(data)
+                        console.log("agregado")
+
+                    const cart = await this.model.find({_id: cartId}).populate('products.productId');
+                    return cart   
                 }
-            }
-            
-            //const verify_product = await this.model.findById
-                const data = await this.model.findOneAndUpdate(
-                    { _id: cartId },
-                    { $push: { products: { _id: productId } } },
-                    { $inc: { products: { "products.$.quantity": 1 } }},
-                    { new: true }
-                    );
-
-           return data;*/
-            
+            }  
         } catch (error) {
             throw new Error(error.message);
         }
     }
 
-    async deleteProducts(cartId,productId){
+    async deleteProducts(cartId,productID){
         try {
-            const data =  await this.model.findOneAndUpdate(
-                { _id: cartId}, 
-                { $pull: { products: { _id: productId } } }
-                  );
-            
-                return data
+            const cart = await this.model.findById(cartId)
+
+            if(cart){
+                const arrayCart = cart.products;
+
+                const productIds = arrayCart.map((item) => item.productId.toString())
+
+                const verifyExistance = productIds.includes(productID)
+
+                console.log(verifyExistance)
+
+                if(verifyExistance == true){
+
+                    console.log("Si")
+                    const data =  await this.model.findOneAndUpdate(
+                        { _id: cartId}, 
+                        { $pull: { products: { productId: productID } } },
+                        { new: true }
+                          );
+                    const cart = await this.model.find({_id: cartId});
+                    return cart  
+
+                }else{
+                    console.log("no")
+                    throw new Error("El producto con el id ${productID} no existe")
+                }
+            }
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
+    async updateQuantity(cartId,productID, quantity){
+        try {
+            const data =await this.model.findOneAndUpdate(
+                { _id: cartId, "products.productId": productID},                  
+                { $inc: { "products.$.quantity": quantity } },
+                { new: true });
+                console.log(data)
+            const cart = await this.model.find({_id: cartId}).populate('products.productId');
+            return cart 
             
         } catch (error) {
             
         }
     }
 
-    async deleteProducts(cartId){
-        try {
-            const data =  await this.model.findOneAndUpdate(
-                { _id: cartId}, 
-                { $pull: { products } }
-                  );
-            
-                return data
-        } catch (error) {
-            
-        }
-        }
 
     async deleteCart(cartId){
+        try {     
+            const data =  await this.model.findOneAndUpdate(
+                { _id: cartId},                  
+                {$unset: {products: 1}},
+                { new: true });
+            console.log(data)
+            const cart = await this.model.find({_id: cartId});
+            console.log(cart)
+            return cart  
+        } catch (error) {
+            throw new Error(error.message);
+        }
         
     }
 }

@@ -36,13 +36,13 @@ router.get("/:cid",async(req,res)=>{
 router.post("/:cid/product/:pid", async(req,res)=>{
     try {
         const cartId = req.params.cid;
-        const productId = req.params.pid;
+        const productID = req.params.pid;
         const cart = await manager.getCartById(cartId);
         if(cart){
-            const product = await p_manager.getProductById(productId);
+            const product = await p_manager.getProductById(productID);
             if(product){
-                const addPtoC  = await manager.addProductToCart(cartId,productId);
-                console.log(addPtoC)
+                const addPtoC  = await manager.addProductToCart(cartId,productID);
+                //console.log(addPtoC)
                 res.json({status:"success", message:addPtoC});
             } else {
                 res.status(400).json({status:"error", message:"No es posible agregar este producto"});
@@ -66,13 +66,39 @@ router.delete("/:cid/product/:pid", async(req,res)=>{
             if(product){
                 const deleteProduct  = await manager.deleteProducts(cartId,productId);
                 console.log(deleteProduct)
-                res.json({status:"success", message:deleteProduct});
+                res.json({status:"success", message: deleteProduct});
+            } else {
+                res.status(400).json({status:"error", message:"No es posible eliminar este producto"});
+            }
+        } else {
+            res.status(400).json({status:"error", message:"el carrito no existe"});
+        }
+    } catch (error) {
+        
+    }
+})
+
+router.put("/:cid/product/:pid", async(req,res)=>{
+    try {
+        const cartId = req.params.cid;
+        const productID = req.params.pid;
+        const quantity = req.body.quantity;
+        console.log(quantity)
+        
+        const cart = await manager.getCartById(cartId);
+        if(cart){
+            const product = await p_manager.getProductById(productID);
+            if(product){
+                const updateQuantity = await manager.updateQuantity(cartId,productID,quantity);
+                console.log(updateQuantity)
+                res.json({status:"success", message: updateQuantity});
             } else {
                 res.status(400).json({status:"error", message:"No es posible agregar este producto"});
             }
         } else {
             res.status(400).json({status:"error", message:"el carrito no existe"});
         }
+    
     } catch (error) {
         
     }
@@ -83,15 +109,10 @@ router.delete("/:cid", async(req,res)=>{
     try {
         const cartId = req.params.cid;
         
-        const cart = await manager.getCartById(cartId);
-        if(cart){
-            
-            const deleteProducts  = await manager.deleteProducts(cartId);
-            console.log(deleteProducts)
-            res.json({status:"success", message:deleteProducts});
-        } else {
-            res.status(400).json({status:"error", message:"el carrito no existe"});
-        }
+        const deleteCart  = await manager.deleteCart(cartId);
+        console.log(deleteCart)
+        res.json({status:"success", message:deleteCart});
+        
     } catch (error) {
         
     }

@@ -1,16 +1,16 @@
 <div>
         Carrito
         <ul>
-        {{#each payload}}
-            <li>{{this.title}}</li>
-            <li>{{this.description}}</li>
-            <li>{{this.code}}</li>
-            <li>{{this.price}}</li>
-            <li>{{this.status}}</li>
-            <li>{{this.stock}}</li>
-            <li>{{this.category}}</li>
-            <button onclick="addToCart(`{{this._id}}`)">Agregar al carrito</button>
-            <hr>
+        {{#each products}}
+            <li>Title: {{this.productId.title}}</li>
+            <li>Description: {{this.productId.description}}</li>
+            <li>Code: {{this.productId.code}}</li>
+            <li>Price: {{this.productId.price}}</li>
+            <li>Status: {{this.productId.status}}</li>
+            <li>Stock: {{this.productId.stock}}</li>
+            <li>Category: {{this.productId.category}}</li>
+            <li>Quantity: {{this.quantity}}</li>
+            <br>
         {{/each}}
         </ul>
     </div>

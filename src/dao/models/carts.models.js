@@ -21,10 +21,5 @@ const cartsSchema = new mongoose.Schema({
         default:[]
     }
 });
-/*
-cartsSchema.pre("findOne",function(next){
-    this.populate({ path: 'products', select: '_id' });
-    next()
-});*/
 
 export const cartsModel = mongoose.model(cartsCollection,cartsSchema);

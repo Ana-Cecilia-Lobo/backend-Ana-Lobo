@@ -19,7 +19,7 @@ export class ProductsMongo{
 
     async getProducts(){ 
         try{  
-            const products = await this.model.find();
+            const products = await this.model.find().lean();
             return products; 
         }catch(error){
             throw new Error(`Error al capturar los productos ${error.message}`);

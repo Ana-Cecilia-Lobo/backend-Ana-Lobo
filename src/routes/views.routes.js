@@ -83,7 +83,9 @@ router.get("/carts/:cid",async(req,res)=>{
     try {
         const id = req.params.cid;
         const cart = await managerCart.getCartById(id);
-        res.render("cart", cart);
+        const products = cart.products;
+        console.log(products)
+        res.render("cart", {products});
     } catch (error) {
         
     }
