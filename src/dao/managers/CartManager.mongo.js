@@ -97,6 +97,34 @@ export class CartsMongo{
         }
     }
 
+    async updateCart(cartId){
+        try {
+            const query = {_id: cartId};
+            const options = {limit: 3,page: 1};
+    
+            const result = await this.model.paginate(query, options);
+
+            console.log(result)
+            
+            const response ={
+                status:"success",
+                payload:result.docs,
+                totalPages:result.totalPages,
+                prevPage: result.prevPage,
+                nextPage: result.nextPage,
+                page:result.page,
+                hasPrevPage:result.hasPrevPage,
+                hasNextPage:result.hasNextPage,
+                prevLink: result.hasPrevPage ? `${baseUrl}?page=${result.prevPage}` : null,
+                nextLink: result.hasNextPage ? `${baseUrl}?page=${result.nextPage}` : null,
+            }
+            return response
+            
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
     async updateQuantity(cartId,productID, quantity){
         try {
             const data =await this.model.findOneAndUpdate(
@@ -108,7 +136,7 @@ export class CartsMongo{
             return cart 
             
         } catch (error) {
-            
+            throw new Error(error.message);
         }
     }
 

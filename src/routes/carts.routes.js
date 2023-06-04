@@ -74,7 +74,18 @@ router.delete("/:cid/product/:pid", async(req,res)=>{
             res.status(400).json({status:"error", message:"el carrito no existe"});
         }
     } catch (error) {
-        
+        res.status(400).json({status:"error", message:error.message});
+    }
+})
+
+router.put("/:cid", async(req,res)=>{
+
+    try {
+        const cartId = req.params.cid;
+        const cart = await manager.updateCart(cartId);
+        res.json({status:"success", message: cart});
+    } catch (error) {
+        res.status(400).json({status:"error", message:error.message});
     }
 })
 
@@ -100,7 +111,7 @@ router.put("/:cid/product/:pid", async(req,res)=>{
         }
     
     } catch (error) {
-        
+        res.status(400).json({status:"error", message:error.message});
     }
 })
 
@@ -114,7 +125,7 @@ router.delete("/:cid", async(req,res)=>{
         res.json({status:"success", message:deleteCart});
         
     } catch (error) {
-        
+        res.status(400).json({status:"error", message:error.message});
     }
 })
 
