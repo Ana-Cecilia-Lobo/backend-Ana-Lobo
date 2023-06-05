@@ -2,8 +2,6 @@ import fs from 'fs'
 import {__dirname} from "../../utils.js";
 import {options} from "../../config/options.js";
 import path from "path";
-//Arreglar ruta usando dirname, path y options 32:00
-
 export default class ProductManager{
 
     constructor(){

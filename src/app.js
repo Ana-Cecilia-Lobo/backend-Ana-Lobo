@@ -1,7 +1,9 @@
 import express from "express";
+import session from "express-session";
 import handlebars from "express-handlebars";
 import path from "path";
 import { Server } from "socket.io";
+import cookieParser from "cookie-parser";
 
 import { __dirname } from "./utils.js";
 import { viewsRouter } from "./routes/views.routes.js";
@@ -11,6 +13,7 @@ import ProductManager from "./dao/managers/ProductManager.js";
 import { connectDB } from "./config/dbConnection.js";
 import {ChatMongo} from "./dao/managers/chat.mongo.js";
 import { ProductsMongo } from "./dao/managers/ProductManager.mongo.js";
+import { CartsMongo } from "./dao/managers/CartManager.mongo.js";
 
 const app = express();
 const port = 8080; 
@@ -20,6 +23,12 @@ const port = 8080;
 app.use(express.static(path.join(__dirname,"/public")));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+app.use(cookieParser());
+app.use(session({
+    secret:"claveSecretaSesiones",
+    resave: true,
+    saveUnitialized: true,
+}))
 
 //configuracion del motor de plantillas
 app.engine('.hbs', handlebars.engine({extname: '.hbs'}));
@@ -80,3 +89,31 @@ io.on("connection",async(socket)=>{
         io.emit("msgHistory", messages);
     });
 });
+
+
+//
+let cartClient = false
+let addCart;
+const cartmanager = new CartsMongo();
+io.on("connection",async(socket)=>{
+
+    console.log("cart client", cartClient)
+
+    socket.on("cart",async(pid)=>{
+        if(cartClient == false){
+            cartClient = true;
+            console.log("cart client", cartClient)
+            addCart = await cartmanager.addCart()
+        }
+
+        const cartId = addCart._id.toString();
+        const addptoc = await cartmanager.addProductToCart(cartId, pid)
+
+        console.log(addptoc)
+
+        const ids = [cartId, pid]
+
+        io.emit("cartId", ids);
+    });
+
+})
