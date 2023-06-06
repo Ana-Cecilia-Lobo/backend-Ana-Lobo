@@ -1,19 +1,22 @@
 import express from "express";
-import session from "express-session";
 import handlebars from "express-handlebars";
 import path from "path";
 import { Server } from "socket.io";
 import cookieParser from "cookie-parser";
+import session from "express-session";
+import MongoStore from "connect-mongo";
 
 import { __dirname } from "./utils.js";
 import { viewsRouter } from "./routes/views.routes.js";
 import { ProductRouter } from "./routes/products.routes.js";
 import { CartRouter } from "./routes/carts.routes.js";
-import ProductManager from "./dao/managers/ProductManager.js";
+import { authRouter } from "./routes/auths.routes.js";
+//import ProductManager from "./dao/managers/ProductManager.js";
 import { connectDB } from "./config/dbConnection.js";
 import {ChatMongo} from "./dao/managers/chat.mongo.js";
 import { ProductsMongo } from "./dao/managers/ProductManager.mongo.js";
 import { CartsMongo } from "./dao/managers/CartManager.mongo.js";
+import { options } from "./config/options.js"; 
 
 const app = express();
 const port = 8080; 
@@ -25,10 +28,15 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
 app.use(session({
+    store: MongoStore.create({
+        mongoUrl: options.mongo.url
+    }),
     secret:"claveSecretaSesiones",
     resave: true,
     saveUnitialized: true,
 }))
+
+
 
 //configuracion del motor de plantillas
 app.engine('.hbs', handlebars.engine({extname: '.hbs'}));
@@ -42,6 +50,7 @@ connectDB();
 app.use("/api/products", ProductRouter);
 app.use("/api/carts", CartRouter);
 app.use("/", viewsRouter);
+app.use("/api/sessions", authRouter)
 
 //Servidor HTTP
 const httpServer = app.listen(port,()=>console.log(`Server listening on port ${port}`));

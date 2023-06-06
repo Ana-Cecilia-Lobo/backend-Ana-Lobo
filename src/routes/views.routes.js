@@ -125,4 +125,22 @@ router.post("/realtimeproducts",async(req,res)=>{
 });
 
 
+router.get("/login", async(req,res)=>{
+ 
+    res.render("login")
+    
+});
+
+router.get("/singup", async(req,res)=>{
+    
+    res.render("singup")
+
+});
+
+router.get("/profile", async(req,res)=>{
+   
+    res.render("profile",{email:req.session.user.email});
+
+});
+
 export {router as viewsRouter};
