@@ -3,6 +3,7 @@ import { userModel } from "../dao/models/user.models.js";
 
 const router = Router();
 
+
 //registro
 router.post("/signup", async(req,res)=>{
     try {
@@ -10,10 +11,21 @@ router.post("/signup", async(req,res)=>{
 
         const user = await userModel.findOne({email:userForm.email});
         if(!user){
+            const correo = userForm.email;
+    
+            if(correo == "adminCoder@coder.com"){
+                const userCreated = await userModel.create(userForm);
+                console.log(userCreated)
+                //userCreated.rol = "admin";
 
-            const userCreated = await userModel.create(userForm);
-            console.log(userCreated)
-            res.send('<div>usuario registrado, <a href="/login">ir al login</a></div>');
+                const userUpdated = await userModel.findOneAndUpdate({email:userCreated.email}, {rol:"admin"})
+                res.send('<div>usuario registrado, <a href="/login">ir al login</a></div>');
+            }else{
+                console.log(false)
+                const userCreated = await userModel.create(userForm);
+                console.log(userCreated)
+                res.send('<div>usuario registrado, <a href="/login">ir al login</a></div>');
+            }
         } else {
             res.send('<div>usuario ya registrado, <a href="/singup">intente de nuevo</a></div>');
         }
@@ -22,7 +34,7 @@ router.post("/signup", async(req,res)=>{
     }
 });
 
-//iniciarsesioni 
+//iniciar sesion
 router.post("/login", async(req,res)=>{
     try {
         const userLoginForm = req.body;
@@ -33,7 +45,7 @@ router.post("/login", async(req,res)=>{
             if(userDB.password === userLoginForm.password){
                 
                 req.session.user={first_name:userDB.first_name, last_name:userDB.last_name, email:userDB.email};
-                res.redirect("/profile");
+                res.redirect("/products");
             } else {
                 res.send('<div>credenciales invalidas, <a href="/login">intente de nuevo</ahref=></div>');
             }

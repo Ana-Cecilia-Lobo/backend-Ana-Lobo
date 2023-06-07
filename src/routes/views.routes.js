@@ -6,8 +6,16 @@ const manager = new ProductsMongo();
 const managerCart = new CartsMongo();
 const router = Router();
 
+//Middlewares
+const checkSession = (req, res, next)=>{
+    if(req.session.user){
+        next();
+    } else {
+        res.send('Debes iniciar sesion para acceder a este recurso <a href="/singup">intente de nuevo</a></div>')
+    } 
+}
 
-router.get("/",async(req, res)=>{
+router.get("/", checkSession, async(req, res)=>{
     try{
         const products = await manager.getProducts();
         console.log(products)
@@ -28,11 +36,11 @@ router.get("/",async(req, res)=>{
     }
 });
 
-router.get("/chat",async(req,res)=>{
+router.get("/chat", checkSession, async(req,res)=>{
     res.render("chat");
 });
 
-router.get("/products",async(req,res)=>{
+router.get("/products", checkSession, async(req,res)=>{
     const {limit=3,page=1,sort="asc",category,stock} = req.query;
     if(!["asc","desc"].includes(sort)){
         return res.json({status:"error", message:"ordenamiento no valido, solo puede ser asc o desc"})
@@ -92,7 +100,7 @@ router.get("/carts/:cid",async(req,res)=>{
     
 });
 
-router.get("/realtimeproducts",async(req,res)=>{
+router.get("/realtimeproducts", checkSession, async(req,res)=>{
     try{
         const products = await manager.getProducts();
         const limit = req.query.limit;
@@ -112,7 +120,7 @@ router.get("/realtimeproducts",async(req,res)=>{
     }
 });
 
-router.post("/realtimeproducts",async(req,res)=>{
+router.post("/realtimeproducts", async(req,res)=>{
     try{
         const product = req.body;
         const add = await manager.addProduct(product);
@@ -137,7 +145,7 @@ router.get("/singup", async(req,res)=>{
 
 });
 
-router.get("/profile", async(req,res)=>{
+router.get("/profile", checkSession, async(req,res)=>{
    
     res.render("profile",{email:req.session.user.email});
 
