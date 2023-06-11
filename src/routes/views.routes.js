@@ -8,7 +8,7 @@ const router = Router();
 
 //Middlewares
 const checkSession = (req, res, next)=>{
-    if(req.session.user){
+    if(req.user){
         next();
     } else {
         res.send('Debes iniciar sesion para acceder a este recurso <a href="/singup">intente de nuevo</a></div>')
@@ -18,7 +18,7 @@ const checkSession = (req, res, next)=>{
 router.get("/", checkSession, async(req, res)=>{
     try{
         const products = await manager.getProducts();
-        console.log(products)
+        //console.log(products)
         const limit = req.query.limit;
         if(limit){
             let productsLimit = [];
@@ -92,7 +92,7 @@ router.get("/carts/:cid",async(req,res)=>{
         const id = req.params.cid;
         const cart = await managerCart.getCartById(id);
         const products = cart.products;
-        console.log(products)
+        //console.log(products)
         res.render("cart", {products});
     } catch (error) {
         
@@ -147,7 +147,7 @@ router.get("/singup", async(req,res)=>{
 
 router.get("/profile", checkSession, async(req,res)=>{
    
-    res.render("profile",{email:req.session.user.email});
+    res.render("profile",{email:req.user.email});
 
 });
 

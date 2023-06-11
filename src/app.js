@@ -5,6 +5,8 @@ import { Server } from "socket.io";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import MongoStore from "connect-mongo";
+import passport from "passport";
+import { initializePassport } from "./config/passport.config.js";
 
 import { __dirname } from "./utils.js";
 import { viewsRouter } from "./routes/views.routes.js";
@@ -27,6 +29,11 @@ app.use(express.static(path.join(__dirname,"/public")));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
+
+//Conexión a base de datos
+connectDB();
+
+//configuración session
 app.use(session({
     store: MongoStore.create({
         mongoUrl: options.mongo.url
@@ -36,6 +43,10 @@ app.use(session({
     saveUnitialized: true,
 }))
 
+//confiuguracion passport
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 //configuracion del motor de plantillas
@@ -43,8 +54,6 @@ app.engine('.hbs', handlebars.engine({extname: '.hbs'}));
 app.set("views",path.join(__dirname,"/views"));
 app.set('view engine', '.hbs');
 
-//Conexión a base de datos
-connectDB();
 
 //rutas
 app.use("/api/products", ProductRouter);
@@ -67,7 +76,7 @@ io.on("connection", async (socket) => {
 	
 	const items = await manager.getProducts();
 	socket.emit("itemShow", items);
-	console.log(items)
+	//console.log(items)
 
 	socket.on("item", async (product) => {
         try{
@@ -111,14 +120,14 @@ io.on("connection",async(socket)=>{
     socket.on("cart",async(pid)=>{
         if(cartClient == false){
             cartClient = true;
-            console.log("cart client", cartClient)
+            //console.log("cart client", cartClient)
             addCart = await cartmanager.addCart()
         }
 
         const cartId = addCart._id.toString();
         const addptoc = await cartmanager.addProductToCart(cartId, pid)
 
-        console.log(addptoc)
+        //console.log(addptoc)
 
         const ids = [cartId, pid]
 
