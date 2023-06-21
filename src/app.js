@@ -1,5 +1,6 @@
 import express from "express";
 import handlebars from "express-handlebars";
+import { engine } from 'express-handlebars';
 import path from "path";
 import { Server } from "socket.io";
 import cookieParser from "cookie-parser";
@@ -17,7 +18,7 @@ import { authRouter } from "./routes/auths.routes.js";
 import { connectDB } from "./config/dbConnection.js";
 import {ChatMongo} from "./dao/managers/chat.mongo.js";
 import { ProductsMongo } from "./dao/managers/ProductManager.mongo.js";
-import { CartsMongo } from "./dao/managers/CartManager.mongo.js";
+//import { CartsMongo } from "./dao/managers/CartManager.mongo.js";
 import { options } from "./config/options.js"; 
 
 const app = express();
@@ -38,7 +39,7 @@ app.use(session({
     store: MongoStore.create({
         mongoUrl: options.mongo.url
     }),
-    secret:"claveSecretaSesiones",
+    secret:options.server.secretSession,
     resave: true,
     saveUnitialized: true,
 }))
@@ -108,30 +109,3 @@ io.on("connection",async(socket)=>{
     });
 });
 
-
-//
-let cartClient = false
-let addCart;
-const cartmanager = new CartsMongo();
-io.on("connection",async(socket)=>{
-
-    console.log("cart client", cartClient)
-
-    socket.on("cart",async(pid)=>{
-        if(cartClient == false){
-            cartClient = true;
-            //console.log("cart client", cartClient)
-            addCart = await cartmanager.addCart()
-        }
-
-        const cartId = addCart._id.toString();
-        const addptoc = await cartmanager.addProductToCart(cartId, pid)
-
-        //console.log(addptoc)
-
-        const ids = [cartId, pid]
-
-        io.emit("cartId", ids);
-    });
-
-})

@@ -5,7 +5,8 @@ export const options = {
         carts:"carts.json"
     },
     server:{
-        port:8080
+        port:8080,
+        secretSession:"claveSecretaSesiones"
     },
     mongo:{
         url:"mongodb+srv://anacl1935:anachua2005@cluster-ana.8adxgaa.mongodb.net/ecommerce?retryWrites=true&w=majority"

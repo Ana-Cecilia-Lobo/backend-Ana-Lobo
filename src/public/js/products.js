@@ -1,20 +1,38 @@
-const socketClient = io();
 
-const addToCart = async(productId)=>{
-    
+const addToCart = async (productId) => {
+	try {
+		const resp = await fetch(
+			`http://localhost:8080/user-cart`,
+			{
+				method: "get",
+			}
+		);
 
-    socketClient.emit("cart", productId);
-
-    //const addPtoC  = await cartmanager.addProductToCart(cartId,productID);
-
-    //console.log("Este sera el producto a agregar", productId);
-};
-
-
-
-socketClient.on("cartId", (data) => { 
-
-    console.log(`El producto con el id ${data[1]} se ha agregado al carrito con id ${data[0]} correctamente`)
-
-    
-})
+		const cartId = await resp.json();
+		console.log(cartId)
+		
+		if (productId && cartId) {
+			const resp = await fetch(
+				`http://localhost:8080/api/carts/${cartId}/product/${productId}`,
+				{
+					method: "POST",
+				}
+			);
+			const result = await resp.json();
+			console.log(result)
+			
+			if (result.status == "success") {
+				const payload = await fetch(
+					`http://localhost:8080/api/carts/${cartId}`,
+					{
+						method: "GET",
+					}
+				);
+				const cart = await payload.json();
+				console.log(cart.data);
+			}
+		}
+	} catch (error) {
+		console.log("Error: ", error.message);
+	}
+}

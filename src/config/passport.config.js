@@ -1,9 +1,14 @@
 import passport from "passport";
 import localStrategy from "passport-local";
-import githubStrategy from "passport-github2"
+import githubStrategy from "passport-github2";
+
 import { userModel } from "../dao/models/user.models.js";
+import { UserMongo } from "../dao/managers/Users.mongo.js";
+import { CartsMongo } from "../dao/managers/CartManager.mongo.js";
 import { createHash, isValidPassword } from "../utils.js";
 
+const usersService = new UserMongo();
+const manager = new CartsMongo();
 
 export const initializePassport = ()=>{
     passport.use("signupStrategy",new localStrategy(
@@ -13,37 +18,30 @@ export const initializePassport = ()=>{
         },
         async(req, username, password, done)=>{
             try {
-                const userSignupForm = req.body;
-                const user = await userModel.findOne({email:username});
+                const {first_name,last_name} = req.body;
+                const user = await usersService.getUserByEmail(username);
                 if(!user){
-                    
-                    const correo = userSignupForm.email;
-    
-                    if(correo == "adminCoder@coder.com"){
-                        const newUser = {
-                            first_name:userSignupForm.first_name,
-                            last_name: userSignupForm.last_name,
-                            age: userSignupForm.age,
-                            email: userSignupForm.email,
-                            password:createHash(password),
-                            rol: "admin",
-                        }
-                        const userCreated = await userModel.create(newUser);
-                        return done(null, userCreated);
-                    }else{
-                        const newUser = {
-                            first_name:userSignupForm.first_name,
-                            last_name: userSignupForm.last_name,
-                            age: userSignupForm.age,
-                            email: userSignupForm.email,
-                            password:createHash(password),
-                        }
-                        const userCreated = await userModel.create(newUser);
-                        return done(null, userCreated);
-                    }
-                } else {    
                     return done(null,false);
                 }
+
+                let role = "user";
+                if(username.endsWith("@coder.com")){
+                    role="admin";
+                }
+
+                const userCart = await manager.addCart();
+                const newUser = {
+                    first_name,
+                    last_name,
+                    email: username,
+                    age: req.body.age,
+                    password:createHash(password),
+                    cart: userCart,
+                    role,
+                };
+
+                const createdUser = await usersService.saveUser(newUser);
+                return done(null,createdUser);
             } catch (error) {
                 return done(error);
             }
@@ -57,16 +55,16 @@ export const initializePassport = ()=>{
         },
         async(username, password, done)=>{
             try {
-                const userDB = await userModel.findOne({email:username});
-                if(userDB){
-                    if(isValidPassword(password,userDB)){
-                        return done(null,userDB);
-                    } else {
-                        return done(null, false)
-                    }
-                } else {
-                    return done(null,false)
+                const user = await usersService.getUserByEmail(username);
+
+                if(!user){
+                    return done(null,false);
                 }
+                //verificar la contraseña del usuario
+                if(!isValidPasswordvalidPassword(password,user)){
+                    return done(null,false);
+                }
+                return done(null,user);
             } catch (error) {
                 return done(error);
             }
@@ -83,19 +81,26 @@ passport.use("githubSignup", new githubStrategy(
     async(accesstoken,refreshtoken,profile,done)=>{
         try {
             console.log("profile", profile);
-            const user = await userModel.findOne({email:profile.username});
+            const user = await usersService.getUserByEmail(username);
             if(!user){
-            
+                let role = "user";
+                if(username.endsWith("@coder.com")){
+                    role="admin";
+                }
+
+                const userCart = await manager.addCart();
                 const newUser = {
                     first_name:profile.username,
                     last_name: "",
                     age: null,
                     email: profile.username,
                     password: createHash(profile.id),
+                    cart: userCart,
+                    role,
                 }
-                const userCreated = await userModel.create(newUser);
-                return done(null, userCreated);
                 
+                const createdUser = await usersService.saveUser(newUser);
+                return done(null,createdUser);   
             } else {
                 return done(null,false);
             }
@@ -112,7 +117,7 @@ passport.use("githubSignup", new githubStrategy(
     });
 
     passport.deserializeUser(async(id,done)=>{
-        const userDB = await userModel.findById(id);
-        done(null,userDB); 
+        const user = await usersService.getUserById(id);
+        done(null,user); 
     });
 }

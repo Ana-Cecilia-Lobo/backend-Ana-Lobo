@@ -151,4 +151,10 @@ router.get("/profile", checkSession, async(req,res)=>{
 
 });
 
+router.get("/user-cart", checkSession, async(req,res)=>{
+   
+    res.json(req.user.cart);
+
+});
+
 export {router as viewsRouter};
