@@ -61,7 +61,7 @@ export const initializePassport = ()=>{
                     return done(null,false);
                 }
                 //verificar la contraseña del usuario
-                if(!isValidPasswordvalidPassword(password,user)){
+                if(!isValidPassword(password,user)){
                     return done(null,false);
                 }
                 return done(null,user);
