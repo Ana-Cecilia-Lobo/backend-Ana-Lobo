@@ -14,12 +14,11 @@ import { viewsRouter } from "./routes/views.routes.js";
 import { ProductRouter } from "./routes/products.routes.js";
 import { CartRouter } from "./routes/carts.routes.js";
 import { authRouter } from "./routes/auths.routes.js";
-//import ProductManager from "./dao/managers/ProductManager.js";
 import { connectDB } from "./config/dbConnection.js";
 import {ChatMongo} from "./dao/managers/chat.mongo.js";
 import { ProductsMongo } from "./dao/managers/ProductManager.mongo.js";
-//import { CartsMongo } from "./dao/managers/CartManager.mongo.js";
 import { options } from "./config/options.js"; 
+import { config } from "./config/config.js";
 
 const app = express();
 const port = 8080; 
@@ -64,6 +63,7 @@ app.use("/api/sessions", authRouter)
 
 //Servidor HTTP
 const httpServer = app.listen(port,()=>console.log(`Server listening on port ${port}`));
+console.log("config",config);
 
 //Servidor Websocket
 const io = new Server(httpServer);
