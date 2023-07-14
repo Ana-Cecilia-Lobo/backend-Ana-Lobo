@@ -1,4 +1,4 @@
-import { productsModel } from "../models/products.model.js";
+import { productsModel } from "./models/products.model.js";
 
 export class ProductsMongo{
     
@@ -8,8 +8,8 @@ export class ProductsMongo{
 
     async getPaginate(query={}, options={}){
         try {
-            const result = await this.model.paginate(query, options);
-            //console.log(result)
+            const result = await this.model.paginate(query, options) ;
+            console.log(query, "query", options, "options")
             return result;
             
         } catch (error) {

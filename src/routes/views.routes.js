@@ -1,35 +1,28 @@
 import {Router} from "express";
-import { get, getChat, getProducts, getCart, getRealTimeProducts, postRealTimeProducts, login, singup, profile, getUserCart } from "../controller/views.controller.js";
+import { checkSession, canUpdateProducts, canChat } from "../middlewares/auths.js";
+import { ViewsController } from "../controller/views.controller.js";
 const router = Router();
 
-//Middlewares
-const checkSession = (req, res, next)=>{
-    if(req.user){
-        next();
-    } else {
-        res.send('Debes iniciar sesion para acceder a este recurso <a href="/singup">intente de nuevo</a></div>')
-    } 
-}
 
-router.get("/", checkSession, get);
+router.get("/", checkSession, ViewsController.get);
 
-router.get("/chat", checkSession, getChat);
+router.get("/chat", checkSession, canChat, ViewsController.getChat);
 
-router.get("/products", checkSession, getProducts)
+router.get("/products", checkSession, ViewsController.getProducts)
 
-router.get("/carts/:cid", getCart);
+router.get("/carts/:cid", checkSession, ViewsController.getCart);
 
-router.get("/realtimeproducts", checkSession, getRealTimeProducts);
+router.get("/realtimeproducts", checkSession, ViewsController.getRealTimeProducts);
 
-router.post("/realtimeproducts", postRealTimeProducts);
+router.post("/realtimeproducts", canUpdateProducts, ViewsController.postRealTimeProducts);
 
 
-router.get("/login", login);
+router.get("/login", ViewsController.login);
 
-router.get("/singup", singup);
+router.get("/singup", ViewsController.singup);
 
-router.get("/profile", checkSession, profile);
+router.get("/profile", checkSession, ViewsController.profile);
 
-router.get("/user-cart", checkSession, getUserCart);
+router.get("/user-cart", checkSession, ViewsController.getUserCart);
 
 export {router as viewsRouter};

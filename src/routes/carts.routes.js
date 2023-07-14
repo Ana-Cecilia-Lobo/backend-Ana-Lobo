@@ -1,23 +1,24 @@
 import {Router} from "express";
-import { createCart, getCart, addProduct, deleteProduct, updateCart, updateQuantity, deleteCart } from "../controller/carts.controller.js";
+import {CartsController} from "../controller/carts.controller.js";
+import {ownCart} from "../middlewares/auths.js"
 
 const router = Router();
 
 //Ruta principal api/cart
 
 
-router.post("/", createCart);
+router.post("/", CartsController.createCart);
 
-router.get("/:cid", getCart);
+router.get("/:cid", CartsController.getCart);
 
-router.post("/:cid/product/:pid", addProduct);
+router.post("/:cid/product/:pid", ownCart, CartsController.addProduct);
 
-router.delete("/:cid/product/:pid", deleteProduct);
+router.delete("/:cid/product/:pid", ownCart, CartsController.deleteProduct);
 
-router.put("/:cid", updateCart);
+router.put("/:cid", ownCart, CartsController.updateCart);
 
-router.put("/:cid/product/:pid", updateQuantity);
+router.put("/:cid/product/:pid", ownCart, CartsController.updateQuantity);
 
-router.delete("/:cid", deleteCart);
+router.delete("/:cid", ownCart, CartsController.deleteCart);
 
 export {router as CartRouter};

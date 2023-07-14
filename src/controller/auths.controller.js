@@ -1,6 +1,3 @@
-//import { userModel } from "../dao/models/user.models.js";
-//import { createHash, isValidPassword } from "../utils.js";
-
 
 //Sing up exitoso
 export const singUpExitoso = (req,res)=>{
@@ -10,7 +7,7 @@ export const singUpExitoso = (req,res)=>{
 
 //Sing up failed
 export const singUpFailed = (req,res)=>{
-    res.send('<div>Hubo un error al registrar el usuario, <a href="/signup">intente de nuevo</a></div>');
+    res.send('<div>Hubo un error al registrar el usuario, <a href="/singup">intente de nuevo</a></div>');
 }
 
 //Log in exitoso

@@ -1,6 +1,5 @@
 import express from "express";
 import handlebars from "express-handlebars";
-import { engine } from 'express-handlebars';
 import path from "path";
 import { Server } from "socket.io";
 import cookieParser from "cookie-parser";
@@ -14,14 +13,12 @@ import { viewsRouter } from "./routes/views.routes.js";
 import { ProductRouter } from "./routes/products.routes.js";
 import { CartRouter } from "./routes/carts.routes.js";
 import { authRouter } from "./routes/auths.routes.js";
-import { connectDB } from "./config/dbConnection.js";
-import {ChatMongo} from "./dao/managers/chat.mongo.js";
-import { ProductsMongo } from "./dao/managers/ProductManager.mongo.js";
-import { options } from "./config/options.js"; 
-import { config } from "./config/config.js";
+import {ChatMongo} from "./dao/managers/mongo/chat.mongo.js";
+import { ProductsMongo } from "./dao/managers/mongo/ProductManager.mongo.js";
+import { configuracion } from "./config/config.js"; 
 
 const app = express();
-const port = 8080; 
+const port = configuracion.server.port; 
 
  
 //Middlewares
@@ -30,15 +27,12 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
 
-//Conexión a base de datos
-connectDB();
-
 //configuración session
 app.use(session({
     store: MongoStore.create({
-        mongoUrl: options.mongo.url
+        mongoUrl: configuracion.mongo.url
     }),
-    secret:options.server.secretSession,
+    secret:configuracion.server.secretSession,
     resave: true,
     saveUnitialized: true,
 }))
@@ -63,14 +57,12 @@ app.use("/api/sessions", authRouter)
 
 //Servidor HTTP
 const httpServer = app.listen(port,()=>console.log(`Server listening on port ${port}`));
-console.log("config",config);
 
 //Servidor Websocket
 const io = new Server(httpServer);
 
 
-const manager = new ProductsMongo("./dao/files/products.json");
-
+const manager = new ProductsMongo();
 //configuración webSocket
 io.on("connection", async (socket) => {
 	console.log("id: " + socket.client.conn.id);
@@ -81,19 +73,19 @@ io.on("connection", async (socket) => {
 
 	socket.on("item", async (product) => {
         try{
-			//console.log(product)
+            
             await manager.addProduct(product);
-		    const items = await manager.getProducts();
+            const items = await manager.getProducts();
+            io.emit("itemShow", items);
+             
 			//console.log(items)
-		    io.emit("itemShow", items);
+		    
         }catch(error){
             console.log({status: "error", data: error.message});
         }
 		
 	});
 });
-
-
 
 //configuracion del chat
 const chatService = new ChatMongo();

@@ -1,11 +1,11 @@
 import fs from 'fs'
-import {__dirname} from "../../utils.js";
-import {options} from "../../config/options.js";
+import {__dirname} from '../../../utils.js';
 import path from "path";
-export default class ProductManager{
+
+export class ProductManager{
 
     constructor(){
-        this.path = path.join(__dirname,`/dao/files/${options.filesystem.products}`);
+        this.path = path.join(__dirname,`/dao/managers/memory/files/${options.filesystem.products}`);
     }
 
     fileExists(){
@@ -139,7 +139,7 @@ export default class ProductManager{
         }
     }
 
-    async updateProducts(id, product){
+    async updateProduct(id, product){
         try {
             if(this.fileExists()){
                 const content = await fs.promises.readFile(this.path,"utf-8");
@@ -169,7 +169,7 @@ export default class ProductManager{
         }
     }
 
-    async deleteProducts(id){
+    async deleteProduct(id){
         try {
             if(this.fileExists()){
                 const content = await fs.promises.readFile(this.path,"utf-8");

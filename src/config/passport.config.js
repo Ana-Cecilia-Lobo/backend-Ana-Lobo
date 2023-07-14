@@ -2,9 +2,9 @@ import passport from "passport";
 import localStrategy from "passport-local";
 import githubStrategy from "passport-github2";
 
-import { userModel } from "../dao/models/user.models.js";
-import { UserMongo } from "../dao/managers/Users.mongo.js";
-import { CartsMongo } from "../dao/managers/CartManager.mongo.js";
+import { userModel } from "../dao/managers/mongo/models/user.models.js";
+import { UserMongo } from "../dao/managers/mongo/Users.mongo.js";
+import { CartsMongo } from "../dao/managers/mongo/CartManager.mongo.js";
 import { createHash, isValidPassword } from "../utils.js";
 
 const usersService = new UserMongo();
@@ -20,13 +20,13 @@ export const initializePassport = ()=>{
             try {
                 const {first_name,last_name} = req.body;
                 const user = await usersService.getUserByEmail(username);
-                if(!user){
+                if(user){
                     return done(null,false);
                 }
 
-                let role = "user";
+                let rol = "user";
                 if(username.endsWith("@coder.com")){
-                    role="admin";
+                    rol="admin";
                 }
 
                 const userCart = await manager.addCart();
@@ -37,7 +37,7 @@ export const initializePassport = ()=>{
                     age: req.body.age,
                     password:createHash(password),
                     cart: userCart,
-                    role,
+                    rol,
                 };
 
                 const createdUser = await usersService.saveUser(newUser);
@@ -80,8 +80,9 @@ passport.use("githubSignup", new githubStrategy(
     },
     async(accesstoken,refreshtoken,profile,done)=>{
         try {
-            console.log("profile", profile);
-            const user = await usersService.getUserByEmail(username);
+            console.log("profile", profile.username);
+            const user = await usersService.getUserByEmail(profile.username);
+            const username = profile.username;
             if(!user){
                 let role = "user";
                 if(username.endsWith("@coder.com")){

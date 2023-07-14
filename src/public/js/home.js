@@ -3,6 +3,7 @@ const socketClient = io()
 const form = document.getElementById("form");
 const products = document.getElementById("products");
 
+
 form.addEventListener("submit", (evt) => {
 	evt.preventDefault();
 	const title = evt.target.elements.title.value;
@@ -22,6 +23,7 @@ form.addEventListener("submit", (evt) => {
 		category: category,
 		thumbnails: thumbnails,
 	};
+
 	socketClient.emit("item", product);
 	form.reset();
 });

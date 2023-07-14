@@ -1,13 +1,13 @@
 import fs from 'fs'
-import {__dirname} from "../../utils.js";
-import {options} from "../../config/options.js";
+import {__dirname} from '../../../utils.js'
+import { configuracion } from '../../../config/config.js';
 import path from "path";
 
 
-export default class CartManager{
+export class CartManager{
 
     constructor(){
-        this.path =  path.join(__dirname,`/dao/files/${options.filesystem.carts}`);
+        this.path =  path.join(__dirname,`/dao/managers/memory/files/${configuracion.filesystem.carts}`);
     }
 
     fileExists(){
