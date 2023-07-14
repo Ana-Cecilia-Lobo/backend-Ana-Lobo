@@ -73,7 +73,6 @@ io.on("connection", async (socket) => {
 
 	socket.on("item", async (product) => {
         try{
-            
             await manager.addProduct(product);
             const items = await manager.getProducts();
             io.emit("itemShow", items);

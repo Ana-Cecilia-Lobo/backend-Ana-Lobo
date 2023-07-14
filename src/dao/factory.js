@@ -4,7 +4,7 @@ let cartsDAO;
 let chatDAO;
 let productDAO;
 let usersDAO;
-
+let ticketsDao
 const PERSISTENCE = configuracion.server.persistence;
 
 switch (PERSISTENCE) {
@@ -15,10 +15,12 @@ switch (PERSISTENCE) {
         const {ChatMongo} = await import("./managers/mongo/chat.mongo.js");
         const {ProductsMongo} = await import("./managers/mongo/ProductManager.mongo.js");
         const {UserMongo} = await import("./managers/mongo/Users.mongo.js");
+        const {Tickets} = await import("./managers/mongo/ticket.mongo.js");
         cartsDAO = new CartsMongo();
         chatDAO = new ChatMongo();
         productDAO = new ProductsMongo();
         usersDAO = new UserMongo();
+        ticketsDao = new Tickets();
         break;
 
     case "memory":
@@ -30,4 +32,4 @@ switch (PERSISTENCE) {
 
 };
 
-export {cartsDAO, chatDAO, productDAO, usersDAO};
+export {cartsDAO, chatDAO, productDAO, usersDAO, ticketsDao};

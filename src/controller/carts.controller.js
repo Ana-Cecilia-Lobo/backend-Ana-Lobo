@@ -1,5 +1,6 @@
 import { CartsService } from "../repository/cart.services.js";
 import { ProductsService } from "../repository/products.services.js";
+import { TicketService } from "../repository/ticket.services.js";
 
 export class CartsController{
     static createCart = async(req, res)=>{
@@ -84,7 +85,7 @@ export class CartsController{
             const cartId = req.params.cid;
             const productID = req.params.pid;
             const quantity = req.body.quantity;
-            
+            console.log(quantity )
             const cart = await CartsService.getCartById(cartId);
             if(cart){
                 const product = await ProductsService.getProductById(productID);
@@ -109,6 +110,67 @@ export class CartsController{
             
             const deleteCart  = await CartsService.deleteCart(cartId);
             res.json({status:"success", message:deleteCart});
+            
+        } catch (error) {
+            res.status(400).json({status:"error", message:error.message});
+        }
+    }; 
+
+    static purchase = async(req,res)=>{
+        try {
+            const cartid = req.params.cid;
+            const cart = await CartsService.getCartById(cartid);
+            
+            if(cart.products.length){
+                let productsApproved = [];
+                let productsRejected = [];
+                for(let i=0; i<cart.products.length; i++){
+
+                    const product = cart.products[i].productId;
+                    const id = JSON.stringify(product._id).replace('"', '').replace('"', '')
+                    const productQty = cart.products[i].quantity;
+                    console.log(id, "id", productQty, "qty")
+
+                    
+                    const productDB = await ProductsService.getProductById(id);
+                    const productStock = productDB.stock;
+
+                    if(productStock >= productQty){
+                        const updateProduct = await ProductsService.updateProduct(id, {"stock": productStock-productQty});
+                        console.log(updateProduct)
+                        productsApproved.push(product.price*productQty);
+                        const deleteProductCart = CartsService.deleteProducts(cartid, id)
+                        console.log(deleteProductCart)
+                    }else{
+                        productsRejected.push(product);
+                    }
+                }
+
+                let today = new Date();
+
+                let totalAmount = productsApproved.reduce((a, b) => a + b, 0);
+
+                const email = req.user.email;
+
+                const ticket = {code: "x", purchase_datetime: today, amount: totalAmount, purchaser: email}
+
+                const createTicket  = await TicketService.createTicket(ticket);
+
+                console.log(createTicket)
+
+                if(productsRejected.length >= 1 && productsApproved.length < 1){
+                    res.json({status:"error", message: "No se pudo procesar ningun producto"});
+                }else if(productsRejected.length >= 1 && productsApproved >= 1){
+                    res.json({status:"success", message: "Compra finalizada con éxito, este es el ticket de su compra "+ createTicket + " Pero hubo " + productsRejected.length + " productos que no pudieron procesarse" });
+                }else{
+                    res.json({status:"success", message: "Compra finalizada con éxito, este es el ticket de su compra"+ createTicket});
+                }
+                
+            }else{
+                res.status(400).json({status:"error", message:"el carrito no tiene productos"});
+            }
+            
+             
             
         } catch (error) {
             res.status(400).json({status:"error", message:error.message});

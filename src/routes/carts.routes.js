@@ -21,4 +21,6 @@ router.put("/:cid/product/:pid", ownCart, CartsController.updateQuantity);
 
 router.delete("/:cid", ownCart, CartsController.deleteCart);
 
+router.post("/:cid/purchase", ownCart, CartsController.purchase)
+
 export {router as CartRouter};
