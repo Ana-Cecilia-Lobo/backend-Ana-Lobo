@@ -9,7 +9,7 @@ const checkSession = (req, res, next)=>{
 
 const canUpdateProducts = (req, res, next)=>{
    const user = req.user.rol
-   console.log(user)
+   //console.log(user)
     if(user === "admin"){
         next()
     }else{
@@ -19,7 +19,7 @@ const canUpdateProducts = (req, res, next)=>{
 
 const canChat = (req, res, next)=>{
     const user = req.user.rol;
-    console.log(user)
+    //console.log(user)
     if(user === "user"){
         next();
     }else{
@@ -31,7 +31,7 @@ const ownCart = (req, res, next)=>{
     if(user === "user"){
         const Owncart = req.user.cart;
         const cart = req.params.cid;
-        console.log(Owncart, cart)
+        //console.log(Owncart, cart)
         if(Owncart == cart){
             next();
         }else{

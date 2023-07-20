@@ -21,4 +21,7 @@ router.put("/:pid", canUpdateProducts, ProductsController.updateProducts);
 //Eliminar productos
 router.delete("/:pid", canUpdateProducts, ProductsController.deleteProducts);
 
+//Mocking
+router.get("/mockingproducts", ProductsController.mocking);
+
 export {router as ProductRouter};

@@ -9,7 +9,7 @@ const addToCart = async (productId) => {
 		);
 
 		const cartId = await resp.json();
-		console.log(cartId)
+		//console.log(cartId)
 		
 		if (productId && cartId) {
 			const resp = await fetch(
@@ -19,7 +19,7 @@ const addToCart = async (productId) => {
 				}
 			);
 			const result = await resp.json();
-			console.log(result)
+			//console.log(result)
 			
 			if (result.status == "success") {
 				const payload = await fetch(
@@ -34,5 +34,33 @@ const addToCart = async (productId) => {
 		}
 	} catch (error) {
 		console.log("Error: ", error.message);
+	}
+}
+
+
+const cart = async ()=>{
+	try {
+		const resp = await fetch(
+			`http://localhost:8080/user-cart`,
+			{
+				method: "GET",
+			}
+		);
+
+		const cartId = await resp.json();
+
+		const res = await fetch(
+			`http://localhost:8080/carts/${cartId}`,
+			{
+				method: "GET",
+				
+			}
+		);
+		
+		
+		
+
+	} catch (error) {
+		console.log(error.message)
 	}
 }

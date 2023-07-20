@@ -80,7 +80,7 @@ passport.use("githubSignup", new githubStrategy(
     },
     async(accesstoken,refreshtoken,profile,done)=>{
         try {
-            console.log("profile", profile.username);
+            //console.log("profile", profile.username);
             const user = await usersService.getUserByEmail(profile.username);
             const username = profile.username;
             if(!user){

@@ -9,7 +9,7 @@ export class ProductsMongo{
     async getPaginate(query={}, options={}){
         try {
             const result = await this.model.paginate(query, options) ;
-            console.log(query, "query", options, "options")
+            //console.log(query, "query", options, "options")
             return result;
             
         } catch (error) {

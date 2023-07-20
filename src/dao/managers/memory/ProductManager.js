@@ -9,7 +9,7 @@ export class ProductManager{
     }
 
     fileExists(){
-        console.log(this.path)
+        //console.log(this.path)
         return fs.existsSync(this.path);
     }
 
@@ -205,7 +205,7 @@ const fucnionPrincipal= async ()=>{
         //console.log("Productos: ", getProducts2);
 
     }catch(error){
-        console.log(error.message);
+        //console.log(error.message);
     }
 }
 

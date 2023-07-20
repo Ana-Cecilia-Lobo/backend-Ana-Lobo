@@ -51,7 +51,7 @@ export class ViewsController{
     
             const baseUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
     
-            console.log("page", page, "limit", limit, "sort", sort, "query", query, "category", category, "sort", sort)
+            //console.log("page", page, "limit", limit, "sort", sort, "query", query, "category", category, "sort", sort)
             const result = await ProductsService.getPaginate(query, {
                 page,
                 limit,
@@ -72,7 +72,7 @@ export class ViewsController{
                 prevLink: result.hasPrevPage ? `${baseUrl.replace( `page=${result.page}` , `page=${result.prevPage}` )}` : null,
                 nextLink: result.hasNextPage ? `${baseUrl.replace( `page=${result.page}` , `page=${result.nextPage}` )}` : null,
             }
-            console.log(response)
+            //console.log(response)
             res.render("products",response);
             
         } catch (error) {
@@ -146,4 +146,5 @@ export class ViewsController{
         res.json(req.user.cart);
     
     };
+
 }

@@ -35,7 +35,7 @@ export class CartsMongo{
                 const arrayCart = cart.products;
                 const productIds = arrayCart.map((item) => item.productId.toString())
                 const verifyExistance = productIds.includes(productID)
-                console.log(verifyExistance)
+                //console.log(verifyExistance)
 
                 if(verifyExistance == true){
 
@@ -43,7 +43,7 @@ export class CartsMongo{
                         { _id: cartId, "products.productId": productID},                  
                         { $inc: { "products.$.quantity": 1 } },
                         { new: true });
-                        console.log(data)
+                        //console.log(data)
                     const cart = await this.model.find({_id: cartId}).populate('products.productId');
                     return cart    
                 }else{
@@ -51,8 +51,8 @@ export class CartsMongo{
                         { _id: cartId},
                         { $push: { products: { productId: productID, quantity: 1 } } },
                         );  
-                        console.log(data)
-                        console.log("agregado")
+                        //console.log(data)
+                        //console.log("agregado")
 
                     const cart = await this.model.find({_id: cartId}).populate('products.productId');
                     return cart   
@@ -74,11 +74,11 @@ export class CartsMongo{
 
                 const verifyExistance = productIds.includes(productID)
 
-                console.log(verifyExistance)
+                //console.log(verifyExistance)
 
                 if(verifyExistance == true){
 
-                    console.log("Si")
+                    //console.log("Si")
                     const data =  await this.model.findOneAndUpdate(
                         { _id: cartId}, 
                         { $pull: { products: { productId: productID } } },
@@ -88,7 +88,7 @@ export class CartsMongo{
                     return cart  
 
                 }else{
-                    console.log("no")
+                    //console.log("no")
                     throw new Error("El producto con el id ${productID} no existe")
                 }
             }
@@ -104,7 +104,7 @@ export class CartsMongo{
     
             const result = await this.model.paginate(query, options);
 
-            console.log(result)
+            //console.log(result)
             
             const response ={
                 status:"success",
@@ -131,7 +131,7 @@ export class CartsMongo{
                 { _id: cartId, "products.productId": productID},                  
                 { $inc: { "products.$.quantity": quantity } },
                 { new: true });
-                console.log(data)
+                //console.log(data)
             const cart = await this.model.find({_id: cartId}).populate('products.productId');
             return cart 
             
@@ -146,9 +146,9 @@ export class CartsMongo{
                 { _id: cartId},                  
                 {$unset: {products: 1}},
                 { new: true });
-            console.log(data)
+            //console.log(data)
             const cart = await this.model.find({_id: cartId});
-            console.log(cart)
+            //console.log(cart)
             return cart  
         } catch (error) {
             throw new Error(error.message);

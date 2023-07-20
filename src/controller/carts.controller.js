@@ -85,7 +85,7 @@ export class CartsController{
             const cartId = req.params.cid;
             const productID = req.params.pid;
             const quantity = req.body.quantity;
-            console.log(quantity )
+            //console.log(quantity )
             const cart = await CartsService.getCartById(cartId);
             if(cart){
                 const product = await ProductsService.getProductById(productID);
@@ -129,18 +129,18 @@ export class CartsController{
                     const product = cart.products[i].productId;
                     const id = JSON.stringify(product._id).replace('"', '').replace('"', '')
                     const productQty = cart.products[i].quantity;
-                    console.log(id, "id", productQty, "qty")
+                    //console.log(id, "id", productQty, "qty")
 
-                    
+            
                     const productDB = await ProductsService.getProductById(id);
                     const productStock = productDB.stock;
 
                     if(productStock >= productQty){
                         const updateProduct = await ProductsService.updateProduct(id, {"stock": productStock-productQty});
-                        console.log(updateProduct)
+                        //console.log(updateProduct)
                         productsApproved.push(product.price*productQty);
                         const deleteProductCart = CartsService.deleteProducts(cartid, id)
-                        console.log(deleteProductCart)
+                        //console.log(deleteProductCart)
                     }else{
                         productsRejected.push(product);
                     }
@@ -156,7 +156,7 @@ export class CartsController{
 
                 const createTicket  = await TicketService.createTicket(ticket);
 
-                console.log(createTicket)
+                //console.log(createTicket)
 
                 if(productsRejected.length >= 1 && productsApproved.length < 1){
                     res.json({status:"error", message: "No se pudo procesar ningun producto"});

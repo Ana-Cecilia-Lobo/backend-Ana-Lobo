@@ -1,5 +1,5 @@
 import { ProductsService } from "../repository/products.services.js";
-
+import { generateProduct } from "../utils.js";
 
 export class ProductsController{
 
@@ -52,7 +52,7 @@ export class ProductsController{
                 prevLink: result.hasPrevPage ? `${baseUrl}?page=${result.prevPage}` : null,
                 nextLink: result.hasNextPage ? `${baseUrl}?page=${result.nextPage}` : null,
             }
-            console.log("response: ", response);
+            //console.log("response: ", response);
             res.json(response)
         } catch (error) {
             res.json({status:"error", message:error.message});
@@ -114,4 +114,19 @@ export class ProductsController{
             res.status(400).json({status: "error", data: error.message});
         }
     };
+
+    static mocking = async(req, res)=>{
+        try {
+            let mocks = []
+            for(let i=0;i<101;i++){
+                const productMock = generateProduct();
+                mocks.push(productMock);
+            }
+            res.json({status:"success", data:mocks});
+            
+        } catch (error) {
+            res.json({status:"error", data: error.message});
+        }
+        
+    }
 }

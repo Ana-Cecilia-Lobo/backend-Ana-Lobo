@@ -9,7 +9,7 @@
         
 
 <div>
-        Carrito
+        <h1>Carrito</h1>
         <ul>
         {{#each products}}
             <li>Title: {{this.productId.title}}</li>
@@ -23,4 +23,8 @@
             <br>
         {{/each}}
         </ul>
-    </div>
+</div>
+<button onclick="purchase()">Comprar</button>
+
+
+<script src="js/cart.js"></script>
