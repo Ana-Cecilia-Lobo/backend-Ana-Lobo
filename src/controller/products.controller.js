@@ -1,6 +1,9 @@
 import { ProductsService } from "../repository/products.services.js";
 import { generateProduct } from "../utils.js";
 
+import { CustomError } from "../repository/error/customError.service.js";//estructura standard del error
+import { EError } from "../enums/EError.js";//tipos de errores
+
 export class ProductsController{
 
     static getProducts = async(req,res)=>{
@@ -39,6 +42,7 @@ export class ProductsController{
                 sort:{price: sortValue},
                 lean:true
             });
+            
         
             const response ={
                 status:"success",
@@ -55,9 +59,10 @@ export class ProductsController{
             //console.log("response: ", response);
             res.json(response)
         } catch (error) {
-            res.json({status:"error", message:error.message});
+            res.json({status:"error", message:error.message});  
         }
-    };
+        }
+    
 
     static getProductsID = async(req,res)=>{
         try{
@@ -69,7 +74,13 @@ export class ProductsController{
                 res.status(400).json({status: "error", data: "el id no es un numero"});
             } 
         }catch(error){
-            res.status(400).json({status: "error", data: error.message});
+            //res.status(400).json({status: "error", data: error.message});
+            CustomError.createError({
+                name: "Error al obtener el producto",
+                cause: "Error",
+                message: error.message,
+                errorCode: EError.INVALID_PARAMS
+            });
         } 
     };
 

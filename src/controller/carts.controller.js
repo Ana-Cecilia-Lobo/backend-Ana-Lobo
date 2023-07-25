@@ -1,7 +1,7 @@
 import { CartsService } from "../repository/cart.services.js";
 import { ProductsService } from "../repository/products.services.js";
 import { TicketService } from "../repository/ticket.services.js";
-
+import {v4 as uuidv4} from 'uuid';
 export class CartsController{
     static createCart = async(req, res)=>{
         try {
@@ -23,10 +23,11 @@ export class CartsController{
             } 
         }catch(error){
             res.status(400).json({status: "error", data: error.message});
-        } 
+        }
     };
 
     static addProduct = async(req,res)=>{
+        
         try {
             const cartId = req.params.cid;
             const productID = req.params.pid;
@@ -146,13 +147,15 @@ export class CartsController{
                     }
                 }
 
+                const code = uuidv4();
+
                 let today = new Date();
 
                 let totalAmount = productsApproved.reduce((a, b) => a + b, 0);
 
                 const email = req.user.email;
 
-                const ticket = {code: "x", purchase_datetime: today, amount: totalAmount, purchaser: email}
+                const ticket = {code: code, purchase_datetime: today, amount: totalAmount, purchaser: email}
 
                 const createTicket  = await TicketService.createTicket(ticket);
 
@@ -176,4 +179,5 @@ export class CartsController{
             res.status(400).json({status:"error", message:error.message});
         }
     }; 
+
 }

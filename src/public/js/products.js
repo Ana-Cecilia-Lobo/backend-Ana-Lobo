@@ -49,13 +49,8 @@ const cart = async ()=>{
 
 		const cartId = await resp.json();
 
-		const res = await fetch(
-			`http://localhost:8080/carts/${cartId}`,
-			{
-				method: "GET",
-				
-			}
-		);
+		const res = 
+		(window.location.href = `http://localhost:8080/carts/${cartId}`)
 		
 		
 		

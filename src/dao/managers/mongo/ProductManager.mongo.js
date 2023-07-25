@@ -9,11 +9,11 @@ export class ProductsMongo{
     async getPaginate(query={}, options={}){
         try {
             const result = await this.model.paginate(query, options) ;
-            //console.log(query, "query", options, "options")
+            console.log(query, "query", options, "options")
             return result;
             
         } catch (error) {
-            throw new Error(`Error al capturar los productos ${error.message}`)
+            throw new Error(`Error al capturar los productos`)
         }
 
     }
@@ -33,10 +33,10 @@ export class ProductsMongo{
             if(product){
                 return product;
             }else{
-                throw new Error(`El producto con el id ${id} no existe`);
+                throw new Error();
             }
         } catch (error) {
-            throw new Error(error.message);
+            throw new Error(`El producto con el id ${id} no existe`);
         }
     }
 

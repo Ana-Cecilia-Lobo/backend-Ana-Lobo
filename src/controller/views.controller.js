@@ -1,5 +1,6 @@
 import { CartsService } from "../repository/cart.services.js";
 import { ProductsService } from "../repository/products.services.js";
+import { TicketService } from "../repository/ticket.services.js";
 import { UserDto } from "../dao/dto/user.dto.js";
 
 export class ViewsController{
@@ -147,4 +148,16 @@ export class ViewsController{
     
     };
 
+    static getTicket = async(req,res)=>{
+        try {
+            const user = new UserDto(req.user);
+
+            const email = user.email;
+
+            const getTicket = await TicketService.getTicket(email);
+            res.render("ticket", {getTicket})
+        } catch (error) {
+            res.status(400).json({status: "error", data: error.message});
+        }
+    }
 }

@@ -16,4 +16,14 @@ export class Tickets{
             throw new Error(`Error al crear el ticket ${error.message}`);
         }
     }
+
+    async getTicket(email){
+        try {
+            const ticket = await this.model.findOne({"purchaser":email}).sort({ "purchase_datetime": -1 }).lean()
+            return ticket
+            
+        } catch (error) {
+            
+        }
+    }
 }

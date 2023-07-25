@@ -25,4 +25,6 @@ router.get("/profile", checkSession, ViewsController.profile);
 
 router.get("/user-cart", checkSession, ViewsController.getUserCart);
 
+router.get("/ticket", ViewsController.getTicket);
+
 export {router as viewsRouter};
