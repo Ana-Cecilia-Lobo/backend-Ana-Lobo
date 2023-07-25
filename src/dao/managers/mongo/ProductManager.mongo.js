@@ -33,10 +33,11 @@ export class ProductsMongo{
             if(product){
                 return product;
             }else{
-                throw new Error();
+                return
+                //throw new Error();
             }
         } catch (error) {
-            throw new Error(`El producto con el id ${id} no existe`);
+            return
         }
     }
 
@@ -44,10 +45,12 @@ export class ProductsMongo{
         try {
 
             const data = await this.model.create(product);
+            
             return data;
            
         } catch (error) {
-            throw new Error(`Error al crear el producto ${error.message}`);
+            return 
+            //throw new Error(`Error al crear el producto ${error.message}`);
         }
     }
 
@@ -55,11 +58,11 @@ export class ProductsMongo{
         try {
             const data = await this.model.findByIdAndUpdate(id,product,{new:true});
             if(!data){
-                throw new Error("El producto no existe")
+                return
             }
             return data;
         } catch (error) {
-            throw new Error(`Error al actualizar el producto ${error.message}`);
+            return
         }
     }
 
@@ -68,7 +71,7 @@ export class ProductsMongo{
             await this.model.findByIdAndDelete(id);
             return {message: "Producto eliminado"};
         } catch (error) {
-            throw new Error(`Error al eliminar el producto ${error.message}`);
+            return
         }
     };
 

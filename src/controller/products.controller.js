@@ -12,7 +12,13 @@ export class ProductsController{
 
             if(sort){
                 if(!["asc","desc"].includes(sort)){
-                    res.json({status:"error", message:"ordenamiento no válido, solo puede ser asc o desc"})
+                    CustomError.createError({
+                        name: "Error al obtener productos",
+                        cause: "Error",
+                        message: "Ordenamiento no válido, solo puede ser asc o desc",
+                        errorCode: EError.INVALID_PARAMS
+                    });
+                    //res.json({status:"error", message:"ordenamiento no válido, solo puede ser asc o desc"})
                 }
             }
                 
@@ -59,28 +65,71 @@ export class ProductsController{
             //console.log("response: ", response);
             res.json(response)
         } catch (error) {
-            res.json({status:"error", message:error.message});  
+            switch (error.code) {
+                case EError.ROUTING_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.DATABASE_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.AUTH_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.INVALID_JSON:
+                     res.json({status:"error",message:error.message});
+                    break;
+                case EError.INVALID_PARAMS:
+                     res.json({status:"error", message: error.message});
+                    break;
+                default:
+                    break; 
+            }   
         }
-        }
+    }
     
-
     static getProductsID = async(req,res)=>{
         try{
             const id = req.params.pid;
             if(id){
                 const productId = await ProductsService.getProductById(id);
+                if(!productId){
+                    CustomError.createError({
+                        name: "Error al obtener el producto",
+                        cause: "Error",
+                        message: "El producto no pudo ser encontrado",
+                        errorCode: EError.INVALID_JSON
+                    });
+                }
                 res.json({status:"success", data: productId});
             }else{
-                res.status(400).json({status: "error", data: "el id no es un numero"});
+                CustomError.createError({
+                    name: "Error al obtener el producto",
+                    cause: "Error",
+                    message: "El id no es un numero",
+                    errorCode: EError.INVALID_PARAMS
+                });
             } 
         }catch(error){
-            //res.status(400).json({status: "error", data: error.message});
-            CustomError.createError({
-                name: "Error al obtener el producto",
-                cause: "Error",
-                message: error.message,
-                errorCode: EError.INVALID_PARAMS
-            });
+            switch (error.code) {
+                case EError.ROUTING_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.DATABASE_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.AUTH_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.INVALID_JSON:
+                     res.json({status:"error",message:error.message});
+                    break;
+                case EError.INVALID_PARAMS:
+                     res.json({status:"error", message: error.message});
+                    break;
+                default:
+                    break;
+                
+            }
         } 
     };
 
@@ -88,11 +137,35 @@ export class ProductsController{
         try{
             const product = req.body;
             const add = await ProductsService.addProduct(product);
-            if(add){
-                res.json({status:"success", data: product});
+            if(!add){
+                CustomError.createError({
+                    name: "Error al crear el producto",
+                    cause: "Error",
+                    message: "Faltan campos obligatorios",
+                    errorCode: EError.INVALID_JSON
+                });
             }
+            res.json({status:"success", data: product});
         }catch(error){
-            res.status(400).json({status: "error", data: error.message});
+            switch (error.code) {
+                case EError.ROUTING_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.DATABASE_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.AUTH_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.INVALID_JSON:
+                     res.json({status:"error",message:error.message});
+                    break;
+                case EError.INVALID_PARAMS:
+                     res.json({status:"error", message: error.message});
+                    break;
+                default:
+                    break;
+            }
         }
     };
 
@@ -102,12 +175,43 @@ export class ProductsController{
             const id = req.params.pid;
             if(id){
                 const update = await ProductsService.updateProduct(id, product);
+                if(!update){
+                    CustomError.createError({
+                        name: "Error al actualizar el producto",
+                        cause: "Error",
+                        message: "El producto no existe",
+                        errorCode: EError.INVALID_JSON
+                    });
+                }
                 res.json({status: "success", data: update})
             }else{
-                res.status(400).json("Error, el id no es un número");
+                CustomError.createError({
+                    name: "Error al actualizar el producto",
+                    cause: "Error",
+                    message: "El id no es valido",
+                    errorCode: EError.INVALID_PARAMS
+                });
             } 
         }catch(error){
-            res.status(400).json({status: "error", data: error.message});
+            switch (error.code) {
+                case EError.ROUTING_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.DATABASE_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.AUTH_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.INVALID_JSON:
+                     res.json({status:"error",message:error.message});
+                    break;
+                case EError.INVALID_PARAMS:
+                     res.json({status:"error", message: error.message});
+                    break;
+                default:
+                    break;
+            }
         }
     
     };
@@ -117,12 +221,43 @@ export class ProductsController{
             const id = req.params.pid;
             if(id){
                 const deleteProduct = await ProductsService.deleteProducts(id);
+                if(!deleteProduct){
+                    CustomError.createError({
+                        name: "Error al eliminar el producto",
+                        cause: "Error",
+                        message: "No se pudo eliminar el producto",
+                        errorCode: EError.INVALID_JSON
+                    });
+                }
                 res.json({status: "success", data: "Se ha eliminado el producto con el id: " + deleteProduct})
             }else{
-                res.status(400).json("Error, el id no es un número");
+                CustomError.createError({
+                    name: "Error al actualizar el producto",
+                    cause: "Error",
+                    message: "El id no es valido",
+                    errorCode: EError.INVALID_PARAMS
+                });
             } 
         }catch(error){
-            res.status(400).json({status: "error", data: error.message});
+            switch (error.code) {
+                case EError.ROUTING_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.DATABASE_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.AUTH_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.INVALID_JSON:
+                     res.json({status:"error",message:error.message});
+                    break;
+                case EError.INVALID_PARAMS:
+                     res.json({status:"error", message: error.message});
+                    break;
+                default:
+                    break;
+            }
         }
     };
 

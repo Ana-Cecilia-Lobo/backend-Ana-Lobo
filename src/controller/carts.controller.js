@@ -2,6 +2,11 @@ import { CartsService } from "../repository/cart.services.js";
 import { ProductsService } from "../repository/products.services.js";
 import { TicketService } from "../repository/ticket.services.js";
 import {v4 as uuidv4} from 'uuid';
+
+import { CustomError } from "../repository/error/customError.service.js";//estructura standard del error
+import { EError } from "../enums/EError.js";//tipos de errores
+
+
 export class CartsController{
     static createCart = async(req, res)=>{
         try {
@@ -17,17 +22,48 @@ export class CartsController{
             const id = req.params.cid;
             if(id){
                 const cartId = await CartsService.getCartById(id);
+                if(!cartId){
+                    CustomError.createError({
+                        name: "Error al obtener el carrito",
+                        cause: "Error",
+                        message: "El carrito no pudo ser encontrado",
+                        errorCode: EError.INVALID_JSON
+                    });
+                }
                 res.json({status:"success", data: cartId});
             }else{
-                res.status(400).json({status: "error", data: "el id no es un numero"});
+                CustomError.createError({
+                    name: "Error al obtener el carrito",
+                    cause: "Error",
+                    message: "El id no es valido",
+                    errorCode: EError.INVALID_PARAMS
+                });
             } 
         }catch(error){
-            res.status(400).json({status: "error", data: error.message});
+            switch (error.code) {
+                case EError.ROUTING_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.DATABASE_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.AUTH_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.INVALID_JSON:
+                     res.json({status:"error",message:error.message});
+                    break;
+                case EError.INVALID_PARAMS:
+                     res.json({status:"error", message: error.message});
+                    break;
+                default:
+                    break;
+                
+            }
         }
     };
 
     static addProduct = async(req,res)=>{
-        
         try {
             const cartId = req.params.cid;
             const productID = req.params.pid;
@@ -36,16 +72,53 @@ export class CartsController{
                 const product = await ProductsService.getProductById(productID);
                 if(product){
                     const addPtoC  = await CartsService.addProductToCart(cartId,productID);
+                    if(!addPtoC){
+                        CustomError.createError({
+                            name: "Error al agregar el producto al carrito",
+                            cause: "Error",
+                            message: "Hubo un error al agregar el producto al carrito",
+                            errorCode: EError.INVALID_JSON
+                        });
+                    }
                     //console.log(addPtoC)
                     res.json({status:"success", message:addPtoC});
                 } else {
-                    res.status(400).json({status:"error", message:"No es posible agregar este producto"});
+                    CustomError.createError({
+                        name: "Error al agregar el producto al carrito",
+                        cause: "Error",
+                        message: "Producto no existe",
+                        errorCode: EError.INVALID_JSON
+                    });
                 }
             } else {
-                res.status(400).json({status:"error", message:"el carrito no existe"});
+                CustomError.createError({
+                    name: "Error al obtener el carrito",
+                    cause: "Error",
+                    message: "El carrito no pudo ser encontrado",
+                    errorCode: EError.INVALID_JSON
+                });
             }
         } catch (error) {
-            res.status(400).json({status:"error", message:error.message});
+            switch (error.code) {
+                case EError.ROUTING_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.DATABASE_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.AUTH_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.INVALID_JSON:
+                     res.json({status:"error",message:error.message});
+                    break;
+                case EError.INVALID_PARAMS:
+                     res.json({status:"error", message: error.message});
+                    break;
+                default:
+                    break;
+                
+            }
         }
     };
 
@@ -59,25 +132,98 @@ export class CartsController{
                 const product = await ProductsService.getProductById(productId);
                 if(product){
                     const deleteProduct  = await CartsService.deleteProducts(cartId,productId);
+                    if(!deleteProduct){
+                        CustomError.createError({
+                            name: "Error al elinar el producto del carrito",
+                            cause: "Error",
+                            message: "Hubo un error al eliminar el producto del carrito",
+                            errorCode: EError.INVALID_JSON
+                        });
+                    }
                     res.json({status:"success", message: deleteProduct});
                 } else {
-                    res.status(400).json({status:"error", message:"No es posible eliminar este producto"});
+                    CustomError.createError({
+                        name: "Error al eliminar el producto del carrito",
+                        cause: "Error",
+                        message: "Producto no existe",
+                        errorCode: EError.INVALID_JSON
+                    });
                 }
             } else {
-                res.status(400).json({status:"error", message:"el carrito no existe"});
+                CustomError.createError({
+                    name: "Error al obtener el carrito",
+                    cause: "Error",
+                    message: "El carrito no pudo ser encontrado",
+                    errorCode: EError.INVALID_JSON
+                });
             }
         } catch (error) {
-            res.status(400).json({status:"error", message:error.message});
+            switch (error.code) {
+                case EError.ROUTING_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.DATABASE_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.AUTH_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.INVALID_JSON:
+                     res.json({status:"error",message:error.message});
+                    break;
+                case EError.INVALID_PARAMS:
+                     res.json({status:"error", message: error.message});
+                    break;
+                default:
+                    break;
+                
+            }
         }
     };
 
     static updateCart = async(req,res)=>{
         try {
             const cartId = req.params.cid;
-            const cart = await CartsService.updateCart(cartId);
-            res.json({status:"success", message: cart});
+            if(cartId){
+                const cart = await CartsService.updateCart(cartId);
+                if(!cart){
+                    CustomError.createError({
+                        name: "Error al modificar el carrito",
+                        cause: "Error",
+                        message: "El carrito no pudo ser modificado",
+                        errorCode: EError.INVALID_JSON
+                    });
+                }
+                res.json({status:"success", message: cart});
+            }else{
+                CustomError.createError({
+                    name: "Error al obtener el carrito",
+                    cause: "Error",
+                    message: "El id no es valido",
+                    errorCode: EError.INVALID_PARAMS
+                });
+            }
         } catch (error) {
-            res.status(400).json({status:"error", message:error.message});
+            switch (error.code) {
+                case EError.ROUTING_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.DATABASE_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.AUTH_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.INVALID_JSON:
+                     res.json({status:"error",message:error.message});
+                    break;
+                case EError.INVALID_PARAMS:
+                     res.json({status:"error", message: error.message});
+                    break;
+                default:
+                    break;
+                
+            }
         }
     };
 
@@ -92,91 +238,204 @@ export class CartsController{
                 const product = await ProductsService.getProductById(productID);
                 if(product){
                     const updateQuantity = await CartsService.updateQuantity(cartId,productID,quantity);
+                    if(!updateQuantity){
+                        CustomError.createError({
+                            name: "Error al modificar el producto del carrito",
+                            cause: "Error",
+                            message: "Hubo un error al modificar el producto del carrito",
+                            errorCode: EError.INVALID_JSON
+                        });
+                    }
                     res.json({status:"success", message: updateQuantity});
                 } else {
-                    res.status(400).json({status:"error", message:"No es posible agregar este producto"});
+                    CustomError.createError({
+                        name: "Error al eliminar el producto del carrito",
+                        cause: "Error",
+                        message: "Producto no existe",
+                        errorCode: EError.INVALID_JSON
+                    });
                 }
             } else {
-                res.status(400).json({status:"error", message:"el carrito no existe"});
+                CustomError.createError({
+                    name: "Error al obtener el carrito",
+                    cause: "Error",
+                    message: "El carrito no pudo ser encontrado",
+                    errorCode: EError.INVALID_JSON
+                });
             }
         
         } catch (error) {
-            res.status(400).json({status:"error", message:error.message});
+            switch (error.code) {
+                case EError.ROUTING_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.DATABASE_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.AUTH_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.INVALID_JSON:
+                     res.json({status:"error",message:error.message});
+                    break;
+                case EError.INVALID_PARAMS:
+                     res.json({status:"error", message: error.message});
+                    break;
+                default:
+                    break;
+                
+            }
         }
     };
 
     static deleteCart = async(req,res)=>{
         try {
             const cartId = req.params.cid;
-            
-            const deleteCart  = await CartsService.deleteCart(cartId);
-            res.json({status:"success", message:deleteCart});
-            
+            if(cartId){ 
+                const deleteCart  = await CartsService.deleteCart(cartId);
+                if(!deleteCart){
+                    CustomError.createError({
+                        name: "Error al eliminar el carrito",
+                        cause: "Error",
+                        message: "El carrito no pudo ser eliminado",
+                        errorCode: EError.INVALID_JSON
+                    });
+                }
+                res.json({status:"success", message:deleteCart});
+            }else{
+                CustomError.createError({
+                    name: "Error al obtener el carrito",
+                    cause: "Error",
+                    message: "El id no es valido",
+                    errorCode: EError.INVALID_PARAMS
+                });
+            } 
         } catch (error) {
-            res.status(400).json({status:"error", message:error.message});
+            switch (error.code) {
+                case EError.ROUTING_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.DATABASE_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.AUTH_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.INVALID_JSON:
+                     res.json({status:"error",message:error.message});
+                    break;
+                case EError.INVALID_PARAMS:
+                     res.json({status:"error", message: error.message});
+                    break;
+                default:
+                    break;
+                
+            }
         }
     }; 
 
     static purchase = async(req,res)=>{
         try {
             const cartid = req.params.cid;
-            const cart = await CartsService.getCartById(cartid);
-            
-            if(cart.products.length){
-                let productsApproved = [];
-                let productsRejected = [];
-                for(let i=0; i<cart.products.length; i++){
+            if(cartid) {   
+                const cart = await CartsService.getCartById(cartid);
+                if(!cart){
+                    CustomError.createError({
+                        name: "Error al obtener el carrito",
+                        cause: "Error",
+                        message: "El carrito no existe",
+                        errorCode: EError.INVALID_PARAMS
+                    });
+                }
+                    if(cart.products.length){
+                        let productsApproved = [];
+                        let productsRejected = [];
+                        for(let i=0; i<cart.products.length; i++){
 
-                    const product = cart.products[i].productId;
-                    const id = JSON.stringify(product._id).replace('"', '').replace('"', '')
-                    const productQty = cart.products[i].quantity;
-                    //console.log(id, "id", productQty, "qty")
+                            const product = cart.products[i].productId;
+                            const id = JSON.stringify(product._id).replace('"', '').replace('"', '')
+                            const productQty = cart.products[i].quantity;
+                            //console.log(id, "id", productQty, "qty")
 
-            
-                    const productDB = await ProductsService.getProductById(id);
-                    const productStock = productDB.stock;
+                    
+                            const productDB = await ProductsService.getProductById(id);
+                            const productStock = productDB.stock;
 
-                    if(productStock >= productQty){
-                        const updateProduct = await ProductsService.updateProduct(id, {"stock": productStock-productQty});
-                        //console.log(updateProduct)
-                        productsApproved.push(product.price*productQty);
-                        const deleteProductCart = CartsService.deleteProducts(cartid, id)
-                        //console.log(deleteProductCart)
+                            if(productStock >= productQty){
+                                const updateProduct = await ProductsService.updateProduct(id, {"stock": productStock-productQty});
+                                //console.log(updateProduct)
+                                productsApproved.push(product.price*productQty);
+                                const deleteProductCart = CartsService.deleteProducts(cartid, id)
+                                //console.log(deleteProductCart)
+                            }else{
+                                productsRejected.push(product);
+                            }
+                        }
+
+                        const code = uuidv4();
+
+                        let today = new Date();
+
+                        let totalAmount = productsApproved.reduce((a, b) => a + b, 0);
+
+                        const email = req.user.email;
+
+                        const ticket = {code: code, purchase_datetime: today, amount: totalAmount, purchaser: email}
+
+                        const createTicket  = await TicketService.createTicket(ticket);
+
+                        if(!createTicket){
+                            CustomError.createError({
+                                name: "Error al crear el tick",
+                                cause: "Error",
+                                message: "Hubo un error al crear el ticket",
+                                errorCode: EError.INVALID_PARAMS
+                            });
+                        }
+
+                        //console.log(createTicket)
+
+                        if(productsRejected.length >= 1 && productsApproved.length < 1){
+                            res.json({status:"error", message: "No se pudo procesar ningun producto"});
+                        }else if(productsRejected.length >= 1 && productsApproved >= 1){
+                            res.json({status:"success", message: "Compra finalizada con éxito, este es el ticket de su compra "+ createTicket + " Pero hubo " + productsRejected.length + " productos que no pudieron procesarse" });
+                        }else{
+                            res.json({status:"success", message: "Compra finalizada con éxito, este es el ticket de su compra"+ createTicket});
+                        }
+                        
                     }else{
-                        productsRejected.push(product);
+                        res.status(400).json({status:"error", message:"el carrito no tiene productos"});
                     }
-                }
 
-                const code = uuidv4();
-
-                let today = new Date();
-
-                let totalAmount = productsApproved.reduce((a, b) => a + b, 0);
-
-                const email = req.user.email;
-
-                const ticket = {code: code, purchase_datetime: today, amount: totalAmount, purchaser: email}
-
-                const createTicket  = await TicketService.createTicket(ticket);
-
-                //console.log(createTicket)
-
-                if(productsRejected.length >= 1 && productsApproved.length < 1){
-                    res.json({status:"error", message: "No se pudo procesar ningun producto"});
-                }else if(productsRejected.length >= 1 && productsApproved >= 1){
-                    res.json({status:"success", message: "Compra finalizada con éxito, este es el ticket de su compra "+ createTicket + " Pero hubo " + productsRejected.length + " productos que no pudieron procesarse" });
-                }else{
-                    res.json({status:"success", message: "Compra finalizada con éxito, este es el ticket de su compra"+ createTicket});
-                }
-                
-            }else{
-                res.status(400).json({status:"error", message:"el carrito no tiene productos"});
-            }
-            
-             
-            
+        }else{
+            CustomError.createError({
+                name: "Error al obtener el carrito",
+                cause: "Error",
+                message: "El id no es valido",
+                errorCode: EError.INVALID_PARAMS
+            });
+        }    
         } catch (error) {
-            res.status(400).json({status:"error", message:error.message});
+            switch (error.code) {
+                case EError.ROUTING_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.DATABASE_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.AUTH_ERROR:
+                     res.json({status:"error", message:error.message});
+                    break;
+                case EError.INVALID_JSON:
+                     res.json({status:"error",message:error.message});
+                    break;
+                case EError.INVALID_PARAMS:
+                     res.json({status:"error", message: error.message});
+                    break;
+                default:
+                    break;
+                
+            }
         }
     }; 
 

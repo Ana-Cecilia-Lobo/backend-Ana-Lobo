@@ -21,10 +21,10 @@ export class CartsMongo{
             if(cart){
                 return cart;
             }else{
-                throw new Error(`El carrito con el id ${id} no existe`);
+                return
             }
         } catch (error) {
-            throw new Error(error.message);
+            return
         }
     }
 
@@ -59,7 +59,7 @@ export class CartsMongo{
                 }
             }  
         } catch (error) {
-            throw new Error(error.message);
+            return
         }
     }
 
@@ -89,11 +89,11 @@ export class CartsMongo{
 
                 }else{
                     //console.log("no")
-                    throw new Error("El producto con el id ${productID} no existe")
+                    return
                 }
             }
         } catch (error) {
-            throw new Error(error.message);
+           return
         }
     }
 
@@ -121,7 +121,7 @@ export class CartsMongo{
             return response
             
         } catch (error) {
-            throw new Error(error.message);
+            return
         }
     }
 
@@ -136,7 +136,7 @@ export class CartsMongo{
             return cart 
             
         } catch (error) {
-            throw new Error(error.message);
+           return
         }
     }
 
@@ -151,7 +151,7 @@ export class CartsMongo{
             //console.log(cart)
             return cart  
         } catch (error) {
-            throw new Error(error.message);
+           return
         }
         
     }

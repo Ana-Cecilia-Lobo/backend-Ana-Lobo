@@ -16,7 +16,7 @@ import { authRouter } from "./routes/auths.routes.js";
 import {ChatMongo} from "./dao/managers/mongo/chat.mongo.js";
 import { ProductsMongo } from "./dao/managers/mongo/ProductManager.mongo.js";
 import { configuracion } from "./config/config.js"; 
-import { errorHandler } from "./middlewares/errorHandler.js";
+//import { errorHandler } from "./middlewares/errorHandler.js";
 
 const app = express();
 const port = configuracion.server.port; 
@@ -55,7 +55,7 @@ app.use("/api/products", ProductRouter);
 app.use("/api/carts", CartRouter);
 app.use("/", viewsRouter);
 app.use("/api/sessions", authRouter);
-app.use(errorHandler);
+//app.use(errorHandler);
 
 //Servidor HTTP
 const httpServer = app.listen(port,()=>console.log(`Server listening on port ${port}`));

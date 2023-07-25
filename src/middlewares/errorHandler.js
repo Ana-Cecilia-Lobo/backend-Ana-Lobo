@@ -1,6 +1,6 @@
 import { EError } from "../enums/EError.js";
 
-export const errorHandler = (error,req,res,next)=>{
+ const errorHandler = (error,req,res,next)=>{
 
     console.log("codee: ", error.code);
     switch (error.code) {
