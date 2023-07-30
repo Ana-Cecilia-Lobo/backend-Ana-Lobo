@@ -24,8 +24,6 @@ export const generateProduct = ()=>{
     }
 };
 
-//const product = generateProduct();
-//console.log(product);
 
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

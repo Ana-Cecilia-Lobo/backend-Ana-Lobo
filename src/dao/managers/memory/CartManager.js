@@ -80,7 +80,6 @@ export class CartManager{
                 if(cartI >= 0){
                     //Si el carrito existe
                     const productI = carts[cartI].products.findIndex(i=>i.product === parseInt(productId));
-                    //console.log(productId, productI)
                     if(productI >= 0){
                         carts[cartI].products[productI]={
                             product: carts[cartI].products[productI].product,

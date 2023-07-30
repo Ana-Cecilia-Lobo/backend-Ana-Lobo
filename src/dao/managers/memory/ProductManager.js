@@ -9,7 +9,6 @@ export class ProductManager{
     }
 
     fileExists(){
-        //console.log(this.path)
         return fs.existsSync(this.path);
     }
 

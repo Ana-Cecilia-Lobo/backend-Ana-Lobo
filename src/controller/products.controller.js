@@ -1,5 +1,6 @@
 import { ProductsService } from "../repository/products.services.js";
 import { generateProduct } from "../utils.js";
+import { logger } from "../utils/logger.js";
 
 import { CustomError } from "../repository/error/customError.service.js";//estructura standard del error
 import { EError } from "../enums/EError.js";//tipos de errores
@@ -18,7 +19,6 @@ export class ProductsController{
                         message: "Ordenamiento no válido, solo puede ser asc o desc",
                         errorCode: EError.INVALID_PARAMS
                     });
-                    //res.json({status:"error", message:"ordenamiento no válido, solo puede ser asc o desc"})
                 }
             }
                 
@@ -62,28 +62,11 @@ export class ProductsController{
                 prevLink: result.hasPrevPage ? `${baseUrl}?page=${result.prevPage}` : null,
                 nextLink: result.hasNextPage ? `${baseUrl}?page=${result.nextPage}` : null,
             }
-            //console.log("response: ", response);
+            logger.debug("response: ", response);
             res.json(response)
         } catch (error) {
-            switch (error.code) {
-                case EError.ROUTING_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.DATABASE_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.AUTH_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.INVALID_JSON:
-                     res.json({status:"error",message:error.message});
-                    break;
-                case EError.INVALID_PARAMS:
-                     res.json({status:"error", message: error.message});
-                    break;
-                default:
-                    break; 
-            }   
+            logger.error(error.message)
+            res.status(400).json({status:"error", message:error.message});
         }
     }
     
@@ -110,26 +93,8 @@ export class ProductsController{
                 });
             } 
         }catch(error){
-            switch (error.code) {
-                case EError.ROUTING_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.DATABASE_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.AUTH_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.INVALID_JSON:
-                     res.json({status:"error",message:error.message});
-                    break;
-                case EError.INVALID_PARAMS:
-                     res.json({status:"error", message: error.message});
-                    break;
-                default:
-                    break;
-                
-            }
+            logger.error(error.message)
+            res.status(400).json({status:"error", message:error.message});
         } 
     };
 
@@ -147,25 +112,9 @@ export class ProductsController{
             }
             res.json({status:"success", data: product});
         }catch(error){
-            switch (error.code) {
-                case EError.ROUTING_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.DATABASE_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.AUTH_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.INVALID_JSON:
-                     res.json({status:"error",message:error.message});
-                    break;
-                case EError.INVALID_PARAMS:
-                     res.json({status:"error", message: error.message});
-                    break;
-                default:
-                    break;
-            }
+            logger.error(error.message)
+            res.status(400).json({status:"error", message:error.message});
+            
         }
     };
 
@@ -193,25 +142,8 @@ export class ProductsController{
                 });
             } 
         }catch(error){
-            switch (error.code) {
-                case EError.ROUTING_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.DATABASE_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.AUTH_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.INVALID_JSON:
-                     res.json({status:"error",message:error.message});
-                    break;
-                case EError.INVALID_PARAMS:
-                     res.json({status:"error", message: error.message});
-                    break;
-                default:
-                    break;
-            }
+            logger.error(error.message)
+            res.status(400).json({status:"error", message:error.message});
         }
     
     };
@@ -239,25 +171,8 @@ export class ProductsController{
                 });
             } 
         }catch(error){
-            switch (error.code) {
-                case EError.ROUTING_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.DATABASE_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.AUTH_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.INVALID_JSON:
-                     res.json({status:"error",message:error.message});
-                    break;
-                case EError.INVALID_PARAMS:
-                     res.json({status:"error", message: error.message});
-                    break;
-                default:
-                    break;
-            }
+            logger.error(error.message)
+            res.status(400).json({status:"error", message:error.message});
         }
     };
 
@@ -271,6 +186,7 @@ export class ProductsController{
             res.json({status:"success", data:mocks});
             
         } catch (error) {
+            logger.error(error.message)
             res.json({status:"error", data: error.message});
         }
         

@@ -16,6 +16,7 @@ import { authRouter } from "./routes/auths.routes.js";
 import {ChatMongo} from "./dao/managers/mongo/chat.mongo.js";
 import { ProductsMongo } from "./dao/managers/mongo/ProductManager.mongo.js";
 import { configuracion } from "./config/config.js"; 
+import { logger } from "./utils/logger.js";
 //import { errorHandler } from "./middlewares/errorHandler.js";
 
 const app = express();
@@ -58,7 +59,7 @@ app.use("/api/sessions", authRouter);
 //app.use(errorHandler);
 
 //Servidor HTTP
-const httpServer = app.listen(port,()=>console.log(`Server listening on port ${port}`));
+const httpServer = app.listen(port,()=>logger.info(`Server listening on port ${port}`));
 
 //Servidor Websocket
 const io = new Server(httpServer);
@@ -67,7 +68,7 @@ const io = new Server(httpServer);
 const manager = new ProductsMongo();
 //configuración webSocket
 io.on("connection", async (socket) => {
-	console.log("id: " + socket.client.conn.id);
+	logger.info("id: " + socket.client.conn.id);
 	
 	const items = await manager.getProducts();
 	socket.emit("itemShow", items);
@@ -78,7 +79,7 @@ io.on("connection", async (socket) => {
             const items = await manager.getProducts();
             io.emit("itemShow", items);
         }catch(error){
-            console.log({status: "error", data: error.message});
+            logger.error({status: "error", data: error.message});
         }
 		
 	});

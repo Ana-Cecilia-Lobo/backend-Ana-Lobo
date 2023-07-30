@@ -9,7 +9,8 @@ export const configuracion = {
     server:{
         port: process.env.PORT || 3000,
         secretSession: process.env.SECRET_SESION,
-        persistence: process.env.PERSISTENCE
+        persistence: process.env.PERSISTENCE,
+        appEnv: process.env.NODE_ENV || "development"
     },
     mongo:{
         url:process.env.MONGO_URL,

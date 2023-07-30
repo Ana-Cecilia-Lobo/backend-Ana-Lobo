@@ -2,6 +2,7 @@ import { CartsService } from "../repository/cart.services.js";
 import { ProductsService } from "../repository/products.services.js";
 import { TicketService } from "../repository/ticket.services.js";
 import { UserDto } from "../dao/dto/user.dto.js";
+import { logger } from "../utils/logger.js";
 
 export class ViewsController{
 
@@ -21,7 +22,8 @@ export class ViewsController{
                 res.render("home", {renProducts})
             }
         }catch(error){
-            res.status(400).json({status: "error", data: error.message});
+            logger.error(error.message)
+            res.status(400).json({status:"error", message:error.message});
         }
     };
 
@@ -52,7 +54,6 @@ export class ViewsController{
     
             const baseUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
     
-            //console.log("page", page, "limit", limit, "sort", sort, "query", query, "category", category, "sort", sort)
             const result = await ProductsService.getPaginate(query, {
                 page,
                 limit,
@@ -73,10 +74,11 @@ export class ViewsController{
                 prevLink: result.hasPrevPage ? `${baseUrl.replace( `page=${result.page}` , `page=${result.prevPage}` )}` : null,
                 nextLink: result.hasNextPage ? `${baseUrl.replace( `page=${result.page}` , `page=${result.nextPage}` )}` : null,
             }
-            //console.log(response)
+            logger.debug(response)
             res.render("products",response);
             
         } catch (error) {
+            logger.error(error.message)
             res.status(400).json({status: "error", data: error.message});
         }    
     };
@@ -88,6 +90,7 @@ export class ViewsController{
             const products = cart.products;
             res.render("cart", {products});
         } catch (error) {
+            logger.error(error.message)
             res.status(400).json({status: "error", data: error.message});
         }  
     };
@@ -108,6 +111,7 @@ export class ViewsController{
                 res.render("realTimeProducts", {renProducts})
             }
         }catch(error){
+            logger.error(error.message)
             res.status(400).json({status: "error", data: error.message});
         }
     };
@@ -120,7 +124,8 @@ export class ViewsController{
                 res.redirect("/realtimeproducts")
             }
         }catch(error){
-            res.redirect("/realtimeproducts")
+            logger.error(error.message)
+            res.status(400).json({status: "error", data: error.message});
         }
     };
 
@@ -157,7 +162,18 @@ export class ViewsController{
             const getTicket = await TicketService.getTicket(email);
             res.render("ticket", {getTicket})
         } catch (error) {
+            logger.error(error.message)
             res.status(400).json({status: "error", data: error.message});
         }
+    }
+
+    static logger =  async(req,res)=>{
+        logger.debug("mensaje de nivel debug");
+        logger.http("mensaje de nivel http");
+        logger.info("mensaje informativo");
+        logger.warning("mensaje de advertencia warn");
+        logger.error("mensaje de advertencia warn")
+        logger.fatal("mensaje de error")
+        res.send("utilizando logger");
     }
 }

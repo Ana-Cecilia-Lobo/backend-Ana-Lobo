@@ -2,7 +2,6 @@ import { EError } from "../enums/EError.js";
 
  const errorHandler = (error,req,res,next)=>{
 
-    console.log("codee: ", error.code);
     switch (error.code) {
         case EError.ROUTING_ERROR:
             res.json({status:"error", message:error.message});

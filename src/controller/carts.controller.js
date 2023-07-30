@@ -2,9 +2,10 @@ import { CartsService } from "../repository/cart.services.js";
 import { ProductsService } from "../repository/products.services.js";
 import { TicketService } from "../repository/ticket.services.js";
 import {v4 as uuidv4} from 'uuid';
+import { logger } from "../utils/logger.js";
 
-import { CustomError } from "../repository/error/customError.service.js";//estructura standard del error
-import { EError } from "../enums/EError.js";//tipos de errores
+import { CustomError } from "../repository/error/customError.service.js";
+import { EError } from "../enums/EError.js";
 
 
 export class CartsController{
@@ -13,6 +14,7 @@ export class CartsController{
             const create = await CartsService.addCart();
             res.json({status:"success", data:create});
         } catch (error) {
+            logger.error(error.message)
             res.status(400).json({status:"error", message:error.message});
         }
     };
@@ -40,26 +42,8 @@ export class CartsController{
                 });
             } 
         }catch(error){
-            switch (error.code) {
-                case EError.ROUTING_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.DATABASE_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.AUTH_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.INVALID_JSON:
-                     res.json({status:"error",message:error.message});
-                    break;
-                case EError.INVALID_PARAMS:
-                     res.json({status:"error", message: error.message});
-                    break;
-                default:
-                    break;
-                
-            }
+            logger.error(error.message)
+            res.status(400).json({status:"error", message:error.message});
         }
     };
 
@@ -80,7 +64,6 @@ export class CartsController{
                             errorCode: EError.INVALID_JSON
                         });
                     }
-                    //console.log(addPtoC)
                     res.json({status:"success", message:addPtoC});
                 } else {
                     CustomError.createError({
@@ -99,26 +82,8 @@ export class CartsController{
                 });
             }
         } catch (error) {
-            switch (error.code) {
-                case EError.ROUTING_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.DATABASE_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.AUTH_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.INVALID_JSON:
-                     res.json({status:"error",message:error.message});
-                    break;
-                case EError.INVALID_PARAMS:
-                     res.json({status:"error", message: error.message});
-                    break;
-                default:
-                    break;
-                
-            }
+            logger.error(error.message)
+            res.status(400).json({status:"error", message:error.message});
         }
     };
 
@@ -158,26 +123,8 @@ export class CartsController{
                 });
             }
         } catch (error) {
-            switch (error.code) {
-                case EError.ROUTING_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.DATABASE_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.AUTH_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.INVALID_JSON:
-                     res.json({status:"error",message:error.message});
-                    break;
-                case EError.INVALID_PARAMS:
-                     res.json({status:"error", message: error.message});
-                    break;
-                default:
-                    break;
-                
-            }
+            logger.error(error.message)
+            res.status(400).json({status:"error", message:error.message});
         }
     };
 
@@ -204,26 +151,8 @@ export class CartsController{
                 });
             }
         } catch (error) {
-            switch (error.code) {
-                case EError.ROUTING_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.DATABASE_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.AUTH_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.INVALID_JSON:
-                     res.json({status:"error",message:error.message});
-                    break;
-                case EError.INVALID_PARAMS:
-                     res.json({status:"error", message: error.message});
-                    break;
-                default:
-                    break;
-                
-            }
+            logger.error(error.message)
+            res.status(400).json({status:"error", message:error.message});
         }
     };
 
@@ -232,7 +161,6 @@ export class CartsController{
             const cartId = req.params.cid;
             const productID = req.params.pid;
             const quantity = req.body.quantity;
-            //console.log(quantity )
             const cart = await CartsService.getCartById(cartId);
             if(cart){
                 const product = await ProductsService.getProductById(productID);
@@ -265,26 +193,8 @@ export class CartsController{
             }
         
         } catch (error) {
-            switch (error.code) {
-                case EError.ROUTING_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.DATABASE_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.AUTH_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.INVALID_JSON:
-                     res.json({status:"error",message:error.message});
-                    break;
-                case EError.INVALID_PARAMS:
-                     res.json({status:"error", message: error.message});
-                    break;
-                default:
-                    break;
-                
-            }
+            logger.error(error.message)
+            res.status(400).json({status:"error", message:error.message});
         }
     };
 
@@ -311,26 +221,8 @@ export class CartsController{
                 });
             } 
         } catch (error) {
-            switch (error.code) {
-                case EError.ROUTING_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.DATABASE_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.AUTH_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.INVALID_JSON:
-                     res.json({status:"error",message:error.message});
-                    break;
-                case EError.INVALID_PARAMS:
-                     res.json({status:"error", message: error.message});
-                    break;
-                default:
-                    break;
-                
-            }
+            logger.error(error.message)
+            res.status(400).json({status:"error", message:error.message});
         }
     }; 
 
@@ -355,18 +247,16 @@ export class CartsController{
                             const product = cart.products[i].productId;
                             const id = JSON.stringify(product._id).replace('"', '').replace('"', '')
                             const productQty = cart.products[i].quantity;
-                            //console.log(id, "id", productQty, "qty")
 
-                    
                             const productDB = await ProductsService.getProductById(id);
                             const productStock = productDB.stock;
 
                             if(productStock >= productQty){
                                 const updateProduct = await ProductsService.updateProduct(id, {"stock": productStock-productQty});
-                                //console.log(updateProduct)
+                                logger.debug(updateProduct)
                                 productsApproved.push(product.price*productQty);
                                 const deleteProductCart = CartsService.deleteProducts(cartid, id)
-                                //console.log(deleteProductCart)
+                                logger.debug(deleteProductCart)
                             }else{
                                 productsRejected.push(product);
                             }
@@ -393,7 +283,7 @@ export class CartsController{
                             });
                         }
 
-                        //console.log(createTicket)
+                        logger.debug(createTicket)
 
                         if(productsRejected.length >= 1 && productsApproved.length < 1){
                             res.json({status:"error", message: "No se pudo procesar ningun producto"});
@@ -406,7 +296,6 @@ export class CartsController{
                     }else{
                         res.status(400).json({status:"error", message:"el carrito no tiene productos"});
                     }
-
         }else{
             CustomError.createError({
                 name: "Error al obtener el carrito",
@@ -416,26 +305,8 @@ export class CartsController{
             });
         }    
         } catch (error) {
-            switch (error.code) {
-                case EError.ROUTING_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.DATABASE_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.AUTH_ERROR:
-                     res.json({status:"error", message:error.message});
-                    break;
-                case EError.INVALID_JSON:
-                     res.json({status:"error",message:error.message});
-                    break;
-                case EError.INVALID_PARAMS:
-                     res.json({status:"error", message: error.message});
-                    break;
-                default:
-                    break;
-                
-            }
+            logger.error(error.message)
+            res.status(400).json({status:"error", message:error.message});
         }
     }; 
 

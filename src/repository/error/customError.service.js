@@ -6,7 +6,7 @@ export class CustomError{
         error.cause=cause;
         error.message=message;
         error.code=errorCode;
-        console.log("error: ", error);
+        logger.info("error: ", error);
         throw error;
     }
 }

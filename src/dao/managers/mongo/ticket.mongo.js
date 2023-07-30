@@ -23,7 +23,7 @@ export class Tickets{
             return ticket
             
         } catch (error) {
-            
+            return
         }
     }
 }
