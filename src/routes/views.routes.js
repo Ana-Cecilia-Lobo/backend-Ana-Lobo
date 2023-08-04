@@ -29,4 +29,8 @@ router.get("/ticket", ViewsController.getTicket);
 
 router.get("/loggerTest", ViewsController.logger);
 
+router.get("/forgot-password", ViewsController.forgotPass);
+
+router.get("/reset-password", ViewsController.resetPass);
+
 export {router as viewsRouter};

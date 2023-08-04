@@ -176,4 +176,13 @@ export class ViewsController{
         logger.fatal("mensaje de error")
         res.send("utilizando logger");
     }
+
+    static forgotPass =  async(req,res)=>{
+        res.render("forgotPassword");
+    }
+
+    static resetPass =  async(req,res)=>{
+        const token = req.query.token;
+        res.render("resetPass",{token});
+    }
 }

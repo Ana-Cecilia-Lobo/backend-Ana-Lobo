@@ -2,6 +2,8 @@ import bcrypt from "bcrypt";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { Faker, faker, es} from "@faker-js/faker"
+import { configuracion } from "./config/config.js";
+import jwt from "jsonwebtoken";
 
 const customFaker = new Faker({
     locale:[es]
@@ -35,4 +37,13 @@ export const createHash = (password)=>{
 //funcion para comparar las contraseñas
 export const isValidPassword = (password, user)=>{
     return bcrypt.compareSync(password,user.password);
+};
+
+export const verifyEmailToken = (token)=>{
+    try {
+        const info = jwt.verify(token,configuracion.server.secretToken);
+        return info.email;
+    } catch (error) {
+        return null;
+    }
 };

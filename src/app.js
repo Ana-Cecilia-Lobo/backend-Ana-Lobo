@@ -56,7 +56,6 @@ app.use("/api/products", ProductRouter);
 app.use("/api/carts", CartRouter);
 app.use("/", viewsRouter);
 app.use("/api/sessions", authRouter);
-//app.use(errorHandler);
 
 //Servidor HTTP
 const httpServer = app.listen(port,()=>logger.info(`Server listening on port ${port}`));
