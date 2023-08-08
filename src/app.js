@@ -13,6 +13,7 @@ import { viewsRouter } from "./routes/views.routes.js";
 import { ProductRouter } from "./routes/products.routes.js";
 import { CartRouter } from "./routes/carts.routes.js";
 import { authRouter } from "./routes/auths.routes.js";
+import { UsersRouter } from "./routes/users.routes.js";
 import {ChatMongo} from "./dao/managers/mongo/chat.mongo.js";
 import { ProductsMongo } from "./dao/managers/mongo/ProductManager.mongo.js";
 import { configuracion } from "./config/config.js"; 
@@ -56,6 +57,7 @@ app.use("/api/products", ProductRouter);
 app.use("/api/carts", CartRouter);
 app.use("/", viewsRouter);
 app.use("/api/sessions", authRouter);
+app.use("/api/users", UsersRouter);
 
 //Servidor HTTP
 const httpServer = app.listen(port,()=>logger.info(`Server listening on port ${port}`));
@@ -72,13 +74,17 @@ io.on("connection", async (socket) => {
 	const items = await manager.getProducts();
 	socket.emit("itemShow", items);
 
-	socket.on("item", async (product) => {
+	socket.on("item", async (user) => {
         try{
-            await manager.addProduct(product);
-            const items = await manager.getProducts();
-            io.emit("itemShow", items);
+            console.log(user[0], "userrrr")
+            if(user[0] != "user"){
+                await manager.addProduct(user[1]);
+                const items = await manager.getProducts();
+                io.emit("itemShow", items);
+            }
+           
         }catch(error){
-            logger.error({status: "error", data: error.message});
+            console.log({status: "error", data: error.message});
         }
 		
 	});

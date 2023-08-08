@@ -101,7 +101,7 @@ export class ProductsController{
     static addProducts = async(req,res)=>{
         try{
             const product = req.body;
-            const add = await ProductsService.addProduct(product);
+            const add = await ProductsService.createProduct(product);
             if(!add){
                 CustomError.createError({
                     name: "Error al crear el producto",

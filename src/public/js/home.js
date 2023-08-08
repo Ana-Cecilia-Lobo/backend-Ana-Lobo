@@ -4,7 +4,26 @@ const form = document.getElementById("form");
 const products = document.getElementById("products");
 
 
-form.addEventListener("submit", (evt) => {
+let resp = "";
+let rol = "";
+window.onload = async function(){
+	resp = await fetch(
+		`http://localhost:8080/userid`,
+		{
+			method: "get",
+		}
+	).then(response => response.json()) ;
+
+	rol = await fetch(
+		`http://localhost:8080/userrol`,
+		{
+			method: "get",
+		}
+	).then(rol => rol.json()) ;
+	
+}
+
+form.addEventListener("submit", async(evt) => {
 	evt.preventDefault();
 	const title = evt.target.elements.title.value;
 	const description = evt.target.elements.description.value;
@@ -13,6 +32,7 @@ form.addEventListener("submit", (evt) => {
 	const stock = evt.target.elements.stock.value;
 	const category = evt.target.elements.category.value;
 	const thumbnails = evt.target.elements.thumbnails.value;
+	const owner = resp; 
 	const product = {
 		title: title,
 		description: description,
@@ -22,9 +42,11 @@ form.addEventListener("submit", (evt) => {
 		stock: stock,
 		category: category,
 		thumbnails: thumbnails,
+		owner: owner,
 	};
-
-	socketClient.emit("item", product);
+	const user = [rol, product]
+	
+	socketClient.emit("item", user);
 	form.reset();
 });
 

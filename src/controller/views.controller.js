@@ -153,6 +153,14 @@ export class ViewsController{
     
     };
 
+    static getUserId = async(req,res)=>{
+        res.json(req.user._id);
+    }
+
+    static getUserRol = async(req,res)=>{
+        res.json(req.user.rol);
+    }
+
     static getTicket = async(req,res)=>{
         try {
             const user = new UserDto(req.user);

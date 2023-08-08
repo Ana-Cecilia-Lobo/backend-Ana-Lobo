@@ -1,6 +1,6 @@
 import {Router} from "express";
 import { ProductsController } from "../controller/products.controller.js";
-import { canUpdateProducts } from "../middlewares/auths.js";
+import { canUpdateProducts, canAddProducts} from "../middlewares/auths.js";
 
 const router = Router();
 
@@ -13,7 +13,7 @@ router.get("/", ProductsController.getProducts);
 router.get("/:pid", ProductsController.getProductsID);
 
 //Agregar productos
-router.post("/", canUpdateProducts, ProductsController.addProducts);
+router.post("/", canAddProducts, ProductsController.addProducts);
 
 //Modificar productos
 router.put("/:pid", canUpdateProducts, ProductsController.updateProducts);

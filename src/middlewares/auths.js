@@ -1,4 +1,6 @@
-//Middleware session}
+import { ProductsService } from "../repository/products.services.js";
+
+//Middleware session
 const checkSession = (req, res, next)=>{
     if(req.user){
         next();
@@ -7,13 +9,29 @@ const checkSession = (req, res, next)=>{
     } 
 };
 
-const canUpdateProducts = (req, res, next)=>{
-   const user = req.user.rol
-    if(user === "admin"){
+const canAddProducts = (req, res, next)=>{
+    const user = req.user.rol;
+     if(user === "admin" || user === "premium"){
+         next()
+     }else{
+         res.send('No tienes los permisos para continuar esta acción <a href="/home">Volver al home</a></div>');
+     }
+ }
+
+const canUpdateProducts = async(req, res, next)=>{
+    const user = req.user._id;
+    const rol = req.user.rol
+    const productid = req.params.pid;
+
+    const product = await ProductsService.getProductById(productid)
+    const owner = JSON.parse(JSON.stringify(product.owner))
+
+    if(owner == user || rol === "admin"){
         next()
     }else{
         res.send('No tienes los permisos para continuar esta acción <a href="/home">Volver al home</a></div>');
     }
+
 }
 
 const canChat = (req, res, next)=>{
@@ -39,7 +57,22 @@ const ownCart = (req, res, next)=>{
     }
 }
 
+const addOwnProduct = async (req, res, next)=>{
+
+    const user = req.user._id;
+    const productid = req.params.pid;
+
+    const product = await ProductsService.getProductById(productid)
+    const owner = JSON.parse(JSON.stringify(product.owner))
+
+    if(user == owner){
+        res.send('No puedes agregar un producto que te pertenece a tu carrito <a href="/home">Volver al home</a></div>');
+    }else{
+        next()
+    }
+}
 
 
 
-export {checkSession, canUpdateProducts, canChat, ownCart}
+
+export {checkSession, canUpdateProducts, canAddProducts, addOwnProduct, canChat, ownCart}

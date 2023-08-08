@@ -9,7 +9,7 @@ export class ProductsMongo{
     async getPaginate(query={}, options={}){
         try {
             const result = await this.model.paginate(query, options) ;
-            logger.debug(query, "query", options, "options")
+            console.log(query, "query", options, "options")
             return result;
         } catch (error) {
             throw new Error(`Error al capturar los productos`)
@@ -42,11 +42,11 @@ export class ProductsMongo{
     async addProduct(product){
         try {
            const data = await this.model.create(product);
-            
             return data;
         } catch (error) {
+            console.log(error.message)
+
             return 
-            
         }
     }
 

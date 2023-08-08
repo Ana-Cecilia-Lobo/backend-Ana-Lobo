@@ -25,6 +25,10 @@ router.get("/profile", checkSession, ViewsController.profile);
 
 router.get("/user-cart", checkSession, ViewsController.getUserCart);
 
+router.get("/userid", checkSession, ViewsController.getUserId);
+
+router.get("/userrol", checkSession, ViewsController.getUserRol);
+
 router.get("/ticket", ViewsController.getTicket);
 
 router.get("/loggerTest", ViewsController.logger);
