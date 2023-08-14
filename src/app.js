@@ -7,6 +7,7 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 import passport from "passport";
 import { initializePassport } from "./config/passport.config.js";
+import swaggerUI from "swagger-ui-express";
 
 import { __dirname } from "./utils.js";
 import { viewsRouter } from "./routes/views.routes.js";
@@ -18,6 +19,7 @@ import {ChatMongo} from "./dao/managers/mongo/chat.mongo.js";
 import { ProductsMongo } from "./dao/managers/mongo/ProductManager.mongo.js";
 import { configuracion } from "./config/config.js"; 
 import { logger } from "./utils/logger.js";
+import { swaggerSpecs } from "./config/swaggerConfig.js";
 //import { errorHandler } from "./middlewares/errorHandler.js";
 
 const app = express();
@@ -58,6 +60,8 @@ app.use("/api/carts", CartRouter);
 app.use("/", viewsRouter);
 app.use("/api/sessions", authRouter);
 app.use("/api/users", UsersRouter);
+
+app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerSpecs));
 
 //Servidor HTTP
 const httpServer = app.listen(port,()=>logger.info(`Server listening on port ${port}`));

@@ -26,7 +26,7 @@ export class UsersController{
 
             const update = await UsersService.updateUser(userId, newUser )
 
-            res.json(update)
+            res.send(update)
 
         } catch (error) {
             logger.error(error.message)
