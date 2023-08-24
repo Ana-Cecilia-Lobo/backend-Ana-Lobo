@@ -43,7 +43,7 @@ export class CartsMongo{
                         { _id: cartId, "products.productId": productID},                  
                         { $inc: { "products.$.quantity": 1 } },
                         { new: true });
-                        logger.debug(data)
+                        //logger.debug(data)
                     const cart = await this.model.find({_id: cartId}).populate('products.productId');
                     return cart    
                 }else{
@@ -51,14 +51,14 @@ export class CartsMongo{
                         { _id: cartId},
                         { $push: { products: { productId: productID, quantity: 1 } } },
                         );  
-                        logger.debug(data)
+                        //logger.debug(data)
 
                     const cart = await this.model.find({_id: cartId}).populate('products.productId');
                     return cart   
                 }
             }  
         } catch (error) {
-            return
+            return error
         }
     }
 

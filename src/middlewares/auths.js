@@ -14,7 +14,7 @@ const canAddProducts = (req, res, next)=>{
      if(user === "admin" || user === "premium"){
          next()
      }else{
-         res.send('No tienes los permisos para continuar esta acción <a href="/home">Volver al home</a></div>');
+         res.send('No tienes los permisos para continuar esta acción <a href="/">Volver al home</a></div>');
      }
  }
 
@@ -29,7 +29,7 @@ const canUpdateProducts = async(req, res, next)=>{
     if(owner == user || rol === "admin"){
         next()
     }else{
-        res.send('No tienes los permisos para continuar esta acción <a href="/home">Volver al home</a></div>');
+        res.send('No tienes los permisos para continuar esta acción <a href="/">Volver al home</a></div>');
     }
 
 }
@@ -39,7 +39,7 @@ const canChat = (req, res, next)=>{
     if(user === "user"){
         next();
     }else{
-        res.send('No tienes los permisos para continuar esta acción <a href="/home">Volver al home</a></div>');
+        res.send('No tienes los permisos para continuar esta acción <a href="/">Volver al home</a></div>');
     }
 }
 const ownCart = (req, res, next)=>{
@@ -50,10 +50,10 @@ const ownCart = (req, res, next)=>{
         if(Owncart == cart){
             next();
         }else{
-            res.send('No tienes los permisos para modificar este carrito <a href="/home">Volver al home</a></div>');
+            res.send('No tienes los permisos para modificar este carrito <a href="/">Volver al home</a></div>');
         }
     }else{
-        res.send('No tienes los permisos para continuar esta acción <a href="/home">Volver al home</a></div>');
+        res.send('No tienes los permisos para continuar esta acción <a href="/">Volver al home</a></div>');
     }
 }
 
@@ -66,7 +66,7 @@ const addOwnProduct = async (req, res, next)=>{
     const owner = JSON.parse(JSON.stringify(product.owner))
 
     if(user == owner){
-        res.send('No puedes agregar un producto que te pertenece a tu carrito <a href="/home">Volver al home</a></div>');
+        res.send('No puedes agregar un producto que te pertenece a tu carrito <a href="/">Volver al home</a></div>');
     }else{
         next()
     }

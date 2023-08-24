@@ -8,8 +8,7 @@ export class ProductsMongo{
 
     async getPaginate(query={}, options={}){
         try {
-            const result = await this.model.paginate(query, options) ;
-            console.log(query, "query", options, "options")
+            const result = await this.model.paginate(query, options);
             return result;
         } catch (error) {
             throw new Error(`Error al capturar los productos`)
