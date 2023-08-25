@@ -58,7 +58,7 @@ export class CartsMongo{
                 }
             }  
         } catch (error) {
-            return error
+            return error.message
         }
     }
 
@@ -81,7 +81,7 @@ export class CartsMongo{
                         { $pull: { products: { productId: productID } } },
                         { new: true }
                           );
-                          logger.debug(data)
+                          //logger.debug(data)
                     const cart = await this.model.find({_id: cartId});
                     return cart  
 
@@ -128,7 +128,8 @@ export class CartsMongo{
                 { _id: cartId, "products.productId": productID},                  
                 { $inc: { "products.$.quantity": quantity } },
                 { new: true });
-                logger.debug(data)
+                
+                //logger.debug(data)
             const cart = await this.model.find({_id: cartId}).populate('products.productId');
             return cart          
         } catch (error) {
@@ -142,7 +143,7 @@ export class CartsMongo{
                 { _id: cartId},                  
                 {$unset: {products: 1}},
                 { new: true });
-            logger.debug(data)
+            //logger.debug(data)
             const cart = await this.model.find({_id: cartId});
             return cart  
         } catch (error) {

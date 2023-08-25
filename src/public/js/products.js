@@ -9,7 +9,7 @@ const addToCart = async (productId) => {
 		);
 
 		const cartId = await resp.json();
-		//console.log(cartId)
+		
 		
 		if (productId && cartId) {
 			const resp = await fetch(
@@ -19,7 +19,7 @@ const addToCart = async (productId) => {
 				}
 			);
 			const result = await resp.json();
-			//console.log(result)
+			console.log(result)
 			
 			if (result.status == "success") {
 				const payload = await fetch(

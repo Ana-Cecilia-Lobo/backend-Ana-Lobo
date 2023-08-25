@@ -11,6 +11,7 @@ const checkSession = (req, res, next)=>{
 
 const canAddProducts = (req, res, next)=>{
     const user = req.user.rol;
+    console.log(user)
      if(user === "admin" || user === "premium"){
          next()
      }else{
@@ -44,7 +45,7 @@ const canChat = (req, res, next)=>{
 }
 const ownCart = (req, res, next)=>{
     const user = req.user.rol;
-    if(user === "user"){
+    if(user === "user" || user === "premium"){
         const Owncart = req.user.cart;
         const cart = req.params.cid;
         if(Owncart == cart){

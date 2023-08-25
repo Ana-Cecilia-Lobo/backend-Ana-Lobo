@@ -14,7 +14,7 @@ describe("Testing para carts DAO", ()=>{
     });
 
     beforeEach(async function(){
-        //await cartsModel.deleteMany({});
+        await cartsModel.deleteMany({});
     });
 
     it("Se debe crear un carrito a la base de datos", async function(){
@@ -41,46 +41,75 @@ describe("Testing para carts DAO", ()=>{
 
         const result = await this.manager.addProductToCart(cid, pid)
         expect(result).to.be.an("array").to.have.any.key("_id","products", "0");
-        })
-/*
-    it("Se debe devolver los productos en formato de objeto", async function(){
-        const result = await this.manager.getPaginate();
-        expect(result).to.be.an("object");
     });
 
-    it("Se debe modificar un producto a la base de datos", async function(){
-        const mockUser ={
+    it("Se debe eliminar un producto de un carrito de la base de datos", async function(){
+        const mockProd ={
             title: "Monitor",
             description:"Samsung",
             price:1000,
-            code:"1121",
+            code:"112",
             status:true,
             stock:28,
             category:"Electrónicos"
-        }
-        const result = await this.manager.addProduct(mockUser)
-        const prodID = result._id;
-        const update = {...mockUser};
-        update.description = "lg";
-        const resultUpdate = await this.manager.updateProduct(prodID, update);
+           }
+        const addProduct = await this.pmanager.addProduct(mockProd)
+        const cart = await this.manager.addCart();
+        const cid = cart._id.toString();
+        const pid = addProduct._id.toString();
 
-        expect(resultUpdate.description).to.be.equal("lg")
-    });
+        const agregarProducto = await this.manager.addProductToCart(cid, pid)
+            
+        const result = await this.manager.deleteProducts(cid, pid)
 
-    it("Se debe eliminar un producto a la base de datos", async function(){
-        const mockUser ={
-            title: "Monitor",
-            description:"Samsung",
-            price:1000,
-            code:"1121",
-            status:true,
-            stock:28,
-            category:"Electrónicos"
-        }
-        const result = await this.manager.addProduct(mockUser)
-        const prodID = result._id;
-        const resultDelete = await this.manager.deleteProduct(prodID);
+        const [{products}] = result
 
-        expect(resultDelete).to.include({message: "Producto eliminado"})
-    });*/
+        expect(products).to.be.an("array").that.is.empty;
+        });
+        
+        it("Se debe actualizar  un carrito de la base de datos", async function(){
+           
+            const cart = await this.manager.addCart();
+            const cid = cart._id.toString();
+    
+            const result = await this.manager.updateCart(cid)
+            const {status} = result
+            
+            expect(status).to.be.equal("success");
+        });
+            
+        it("Se debe actualizar la cantidad de un producto de un carrito de la base de datos", async function(){
+            const mockProd ={
+                title: "Monitor",
+                description:"Samsung",
+                price:1000,
+                code:"111",
+                status:true,
+                stock:28,
+                category:"Electrónicos"
+               }
+            const addProduct = await this.pmanager.addProduct(mockProd)
+            const cart = await this.manager.addCart();
+            const cid = cart._id.toString();
+            const pid = addProduct._id.toString();
+    
+            const agregarProducto = await this.manager.addProductToCart(cid, pid)
+                
+            const result = await this.manager.updateQuantity(cid, pid, 2)
+            
+            const [{products}] = result
+
+            const [{quantity}] = products
+    
+            expect(quantity).to.be.equal(3);
+        });
+
+        it("Se debe eliminar un carrito de la base de datos", async function(){
+           
+            const cart = await this.manager.addCart();
+            const cid = cart._id.toString();
+            const result = await this.manager.deleteCart(cid)
+            const [{products}] = result
+            expect(products).to.be.an("array").that.is.empty;
+        });
 }) 

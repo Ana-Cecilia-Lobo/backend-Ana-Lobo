@@ -32,8 +32,8 @@ paths:
             application/json:
               schema:
                 $ref: '#components/schemas/SuccessUpdate'
-        "500":
-          description: Error interno del servidor
+        "400":
+          description: Error, faltan campos // no tienes los permisos
   /api/products/{pid}:
     get:
       summary: Ruta para obtener un producto por su id 
@@ -196,4 +196,4 @@ components:
         status: true
         stock: 32
         category: Cocina
-        owner: ObjectId("64ad8a7a712e3088901ccf96")
+        owner: 64ad8a7a712e3088901ccf96
