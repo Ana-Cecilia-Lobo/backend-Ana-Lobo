@@ -56,7 +56,7 @@ export const initializePassport = ()=>{
         async(username, password, done)=>{
             try {
                 const user = await usersService.getUserByEmail(username);
-
+                
                 if(!user){
                     return done(null,false);
                 }

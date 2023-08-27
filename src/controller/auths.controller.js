@@ -12,7 +12,9 @@ export class SessionsController{
     };
 
     static logInExistoso = (req,res)=>{
+
         res.redirect("/profile");
+        
     };
 
     static logInFailed = (req,res)=>{

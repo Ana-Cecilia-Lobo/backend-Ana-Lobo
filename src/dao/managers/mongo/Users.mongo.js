@@ -46,4 +46,13 @@ export class UserMongo{
             throw error;
         }
     };
+
+    async deleteUser(userId){
+        try {
+            await this.model.deleteOne({ "email" : "roberto@gmail.com" });
+            return {message: "Usuario eliminado"};
+        } catch (error) {
+            return
+        }
+    }
 }

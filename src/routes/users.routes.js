@@ -4,4 +4,6 @@ const router = Router();
 
 router.get("/premium/:uid", UsersController.updateUser);
 
+router.delete("/delete-user",UsersController.deleteUser);
+
 export {router as UsersRouter};

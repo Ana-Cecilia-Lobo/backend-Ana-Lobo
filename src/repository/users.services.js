@@ -16,4 +16,8 @@ export class UsersService{
     static async updateUser(userId,newInfo){
         return usersDAO.updateUser(userId,newInfo);
     };
+
+    static async deleteUser(userId){
+        return usersDAO.deleteUser(userId);
+    }
 }
