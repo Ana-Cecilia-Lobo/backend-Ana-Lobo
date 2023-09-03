@@ -47,4 +47,24 @@ export class UsersController{
             res.status(400).json({status:"error", message:error.message});
         }
     }
+
+    static uploadDocuments = async(req,res)=>{
+        try{ 
+            const userId = req.params.uid
+
+            const user = await UsersService.getUserById(userId);
+            if(!user){
+                return res.send("El usuario no existe, <a href='/singup'>Registrarse</a>");
+            }
+
+
+            const update = await UsersService.updateUser(userId, newUser )
+
+            res.send(update)
+
+        } catch (error) {
+            logger.error(error.message)
+            res.status(400).json({status:"error", message:error.message});
+        }
+    }
 }

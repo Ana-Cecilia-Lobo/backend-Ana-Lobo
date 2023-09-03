@@ -18,6 +18,7 @@ export const initializePassport = ()=>{
         },
         async(req, username, password, done)=>{
             try {
+                console.log(req.file, "req.file")
                 const {first_name,last_name} = req.body;
                 const user = await usersService.getUserByEmail(username);
                 if(user){
@@ -38,6 +39,7 @@ export const initializePassport = ()=>{
                     password:createHash(password),
                     cart: userCart,
                     rol,
+                    avatar: req.file.filename
                 };
 
                 const createdUser = await usersService.saveUser(newUser);
@@ -64,6 +66,8 @@ export const initializePassport = ()=>{
                 if(!isValidPassword(password,user)){
                     return done(null,false);
                 }
+                user.last_connection = new Date()
+                await usersService.updateUser(user._id, user)
                 return done(null,user);
             } catch (error) {
                 return done(error);

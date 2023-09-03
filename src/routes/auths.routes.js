@@ -1,11 +1,12 @@
 import { Router } from "express";
 import passport from "passport";
 import { SessionsController } from "../controller/auths.controller.js";
+import { uploadProfile } from "../utils.js";
 const router = Router();
 
 
 //registro
-router.post("/signup", passport.authenticate("signupStrategy",{
+router.post("/signup", uploadProfile.single("avatar"), passport.authenticate("signupStrategy",{
     failureRedirect:"/api/sessions/signup-failed"
 }) , SessionsController.singUpExitoso);
 

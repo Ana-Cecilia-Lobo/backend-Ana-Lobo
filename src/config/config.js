@@ -14,7 +14,7 @@ export const configuracion = {
         secretToken: process.env.SECRET_TOKEN
     },
     mongo:{
-        url:process.env.MONGO_URL_PRUEBAS,
+        url:process.env.MONGO_URL,
     },
     gmail:{
         adminEmail: process.env.ADMIN_EMAIL,
