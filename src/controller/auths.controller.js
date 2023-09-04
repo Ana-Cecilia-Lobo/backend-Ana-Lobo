@@ -12,8 +12,8 @@ export class SessionsController{
     };
 
     static logInExistoso = (req,res)=>{
-
-        res.redirect("/profile");
+        res.send('<div>usuario logueado, <a href="/profile">ir al perfil</a></div>')
+        //res.redirect("/profile");
         
     };
 

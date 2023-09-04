@@ -12,12 +12,12 @@ export class UsersController{
             }
 
             let rol;
-            if(user.rol == "user"){
+            if(user.rol == "user" && user.status == "Completo"){
                 rol = "premium"
             }else if(user.rol == "premium"){
                 rol = "user"
             }else{
-                return res.send("No puede realizar esta accion, <a href='/home'>Volver al inicio</a>");
+                return res.send("No puede realizar esta accion, <a href='/'>Volver al inicio</a>");
             }
             const newUser = {
                 ...user,
@@ -57,13 +57,41 @@ export class UsersController{
                 return res.send("El usuario no existe, <a href='/singup'>Registrarse</a>");
             }
 
+            const identificacion = req.files["identificacion"]?.[0] || null;
+            const domicilio = req.files["domicilio"]?.[0] || null;
+            const estadoDeCuenta = req.files["estadoDeCuenta"]?.[0] || null;
+            const docs = user.documents;
+            if(identificacion){
+                docs.push({name:"identificacion", reference:identificacion.filename})
+            }
+            if(domicilio){
+                docs.push({name:"domicilio", reference: domicilio.filename})
+            }
+            if(estadoDeCuenta){
+                docs.push({name:"estadoDeCuenta", reference: estadoDeCuenta.filename})
+            }
+            console.log(docs)
+            
+            user.documents = docs;
+            const id = docs.some(e => e.name == 'identificacion');
+            const dom = docs.some(e => e.name == 'domicilio');
+            const est = docs.some(e => e.name == 'estadoDeCuenta');
 
-            const update = await UsersService.updateUser(userId, newUser )
+            let complete = false
+            if(id == true && dom == true && est == true){
+                complete = true
+            }
 
-            res.send(update)
+            if(complete){
+                user.status = "Completo";
+            } else {
+                user.status = "Incompleto";
+            }
+            await UsersService.updateUser(user._id,user);
+            res.json({status:"success", message:"solicitud procesada"});
 
         } catch (error) {
-            logger.error(error.message)
+            console.log(error.message)
             res.status(400).json({status:"error", message:error.message});
         }
     }

@@ -52,9 +52,9 @@ export const verifyEmailToken = (token)=>{
 
 //definir storage de multer
 //funcion para validar los campos del registro de un usuario
-const checkfields = (body)=>{
-    const {first_name,email,password} = body;
-    if(!first_name || !email || !password){
+const checkfields = (user)=>{
+    const userr = user
+    if(!userr){
         return false;
     } else {
         return true;
@@ -62,8 +62,9 @@ const checkfields = (body)=>{
 };
 //funcion para filtrar los datos, antes de guardar la imagen
 const multerProfilefilter = (req,file,cb)=>{
-    const validFields = checkfields(req.body);
+    const validFields = checkfields(req.user);
     if(!validFields){
+        console.log(validFields)
         cb(null, false);
     } else {
         cb(null, true);
@@ -77,11 +78,11 @@ const profileStorage = multer.diskStorage({
         cb(null,path.join(__dirname,"/multer/users/images"))
     },
      filename:function(req,file,cb){
-        cb(null,`${req.body.email}-perfil-${file.originalname}`) 
+        cb(null,`${req.user.email}-perfil-${file.originalname}`) 
     }
 });
 //crear el uploader
-export const uploadProfile = multer({storage:profileStorage});
+export const uploadProfile = multer({storage:profileStorage, fileFilter:multerProfilefilter});
 
 
 //configuración de donde guardar los documentos de los usuarios
@@ -91,12 +92,12 @@ const userDocsStorage = multer.diskStorage({
 
     },
     filename:function(req,file,cb){
-        cb(null,`${req.body.email}-documento-${file.originalname}`)
+        cb(null,`${req.user.email}-documento-${file.originalname}`)
 
     }
 });
 //crear el uploader
-export const uploadUserDoc = multer({storage:userDocsStorage});
+export const uploadUserDoc = multer({storage:userDocsStorage, fileFilter:multerProfilefilter});
 
 
 
@@ -106,10 +107,10 @@ const imgProductStorage = multer.diskStorage({
         cb(null,path.join(__dirname,"/multer/products/images"))
     },
     filename:function(req,file,cb){
-        cb(null,`${req.body.code}-imgProducto-${file.originalname}`)
+        cb(null,`${req.product.code}-imgProducto-${file.originalname}`)
     }
 
 });
 
 //crear el uploader
-export const uploadImgProduct = multer({storage:imgProductStorage});
+export const uploadImgProduct = multer({storage:imgProductStorage, fileFilter:multerProfilefilter});

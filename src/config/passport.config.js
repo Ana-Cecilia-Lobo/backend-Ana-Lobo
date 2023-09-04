@@ -30,6 +30,12 @@ export const initializePassport = ()=>{
                     rol="admin";
                 }
 
+                let file;
+                if(req.file == undefined){
+                    file = "";
+                }else{
+                    file = req.file.filename;
+                }
                 const userCart = await manager.addCart();
                 const newUser = {
                     first_name,
@@ -39,7 +45,7 @@ export const initializePassport = ()=>{
                     password:createHash(password),
                     cart: userCart,
                     rol,
-                    avatar: req.file.filename
+                    avatar: file
                 };
 
                 const createdUser = await usersService.saveUser(newUser);
