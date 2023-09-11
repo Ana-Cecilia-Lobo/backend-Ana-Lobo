@@ -1,25 +1,26 @@
 import {Router} from "express";
 import { ProductsController } from "../controller/products.controller.js";
-import { canUpdateProducts, canAddProducts} from "../middlewares/auths.js";
+import { canUpdateProducts, canAddProducts, checkSession} from "../middlewares/auths.js";
 
 const router = Router();
 
 //Ruta principal api/products
 
 //Obtener productos
-router.get("/", ProductsController.getProducts);
+router.get("/", checkSession, ProductsController.getProducts);
 
 //Obtener productos por id
-router.get("/:pid", ProductsController.getProductsID);
+router.get("/:pid", checkSession, ProductsController.getProductsID);
 
 //Agregar productos
-router.post("/", canAddProducts, ProductsController.addProducts);
+router.post("/", checkSession, canAddProducts, ProductsController.addProducts);
 
 //Modificar productos
-router.put("/:pid", canUpdateProducts, ProductsController.updateProducts);
+router.put("/:pid", checkSession, canUpdateProducts, ProductsController.updateProducts);
 
 //Eliminar productos
-router.delete("/:pid", canUpdateProducts, ProductsController.deleteProducts);
+router.delete("/:pid", checkSession, canUpdateProducts, ProductsController.deleteProducts);
+
 
 //Mocking
 router.get("/mocking/mockingproducts", ProductsController.mocking);

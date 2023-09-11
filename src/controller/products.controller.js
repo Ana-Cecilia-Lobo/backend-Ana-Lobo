@@ -1,6 +1,8 @@
 import { ProductsService } from "../repository/products.services.js";
+import { UsersService } from "../repository/users.services.js";
 import { generateProduct } from "../utils.js";
 import { logger } from "../utils/logger.js";
+import { sendDeletedProductEmail } from "../utils/message.js";
 
 import { CustomError } from "../repository/error/customError.service.js";//estructura standard del error
 import { EError } from "../enums/EError.js";//tipos de errores
@@ -152,7 +154,10 @@ export class ProductsController{
         try{
             const id = req.params.pid;
             if(id){
-                const deleteProduct = await ProductsService.deleteProducts(id);
+                const product = await ProductsService.getProductById(id)
+                const owner = JSON.stringify(product.owner).replace('"', '').replace('"', '');
+                const user =  await UsersService.getUserById(owner)
+                const deleteProduct = await ProductsService.deleteProduct(id);
                 if(!deleteProduct){
                     CustomError.createError({
                         name: "Error al eliminar el producto",
@@ -161,6 +166,7 @@ export class ProductsController{
                         errorCode: EError.INVALID_JSON
                     });
                 }
+                await sendDeletedProductEmail(user.email);   
                 res.json({status: "success", data: "Se ha eliminado el producto con el id: " + deleteProduct})
             }else{
                 CustomError.createError({

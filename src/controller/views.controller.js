@@ -1,5 +1,6 @@
 import { CartsService } from "../repository/cart.services.js";
 import { ProductsService } from "../repository/products.services.js";
+import { UsersService } from "../repository/users.services.js";
 import { TicketService } from "../repository/ticket.services.js";
 import { UserDto } from "../dao/dto/user.dto.js";
 import { logger } from "../utils/logger.js";
@@ -16,6 +17,7 @@ export class ViewsController{
                     productsLimit.push(products[i]);
                 }
                 const renProducts = productsLimit
+
                 res.render("home", {renProducts})
             }else{
                 const renProducts = products;
@@ -193,4 +195,10 @@ export class ViewsController{
         const token = req.query.token;
         res.render("resetPass",{token});
     }
+
+    static update_users =async(req,res)=>{
+        const renUsers = await UsersService.getUsers();
+        res.render("updateUsers", {renUsers});
+    }
+    
 }

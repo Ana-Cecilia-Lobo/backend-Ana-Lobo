@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { checkSession, canUpdateProducts, canChat } from "../middlewares/auths.js";
+import { checkSession, canUpdateProducts, canChat, isAdmin } from "../middlewares/auths.js";
 import { ViewsController } from "../controller/views.controller.js";
 const router = Router();
 
@@ -29,12 +29,14 @@ router.get("/userid", checkSession, ViewsController.getUserId);
 
 router.get("/userrol", checkSession, ViewsController.getUserRol);
 
-router.get("/ticket", ViewsController.getTicket);
+router.get("/ticket", checkSession,  ViewsController.getTicket);
 
 router.get("/loggerTest", ViewsController.logger);
 
 router.get("/forgot-password", ViewsController.forgotPass);
 
 router.get("/reset-password", ViewsController.resetPass);
+
+router.get("/update-users", checkSession, isAdmin, ViewsController.update_users)
 
 export {router as viewsRouter};

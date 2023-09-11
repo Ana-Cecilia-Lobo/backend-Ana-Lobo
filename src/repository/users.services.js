@@ -20,4 +20,12 @@ export class UsersService{
     static async deleteUser(userId){
         return usersDAO.deleteUser(userId);
     }
+    
+    static async getUsers(){
+        return usersDAO.getUsers();
+    }
+    
+    static async deleteUserId(id){
+        return usersDAO.deleteUserId(id);
+    }
 }

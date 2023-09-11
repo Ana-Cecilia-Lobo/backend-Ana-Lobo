@@ -139,15 +139,10 @@ export class CartsMongo{
 
     async deleteCart(cartId){
         try {     
-            const data =  await this.model.findOneAndUpdate(
-                { _id: cartId},                  
-                {$unset: {products: 1}},
-                { new: true });
-            //logger.debug(data)
-            const cart = await this.model.find({_id: cartId});
-            return cart  
+            const data =  await this.model.findByIdAndDelete(cartId);
+            return data  
         } catch (error) {
-           return
+           return error
         }
         
     }

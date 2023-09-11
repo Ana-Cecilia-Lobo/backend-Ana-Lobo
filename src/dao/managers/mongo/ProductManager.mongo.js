@@ -34,7 +34,7 @@ export class ProductsMongo{
                 return
             }
         } catch (error) {
-            return
+            return error
         }
     }
 
@@ -43,9 +43,7 @@ export class ProductsMongo{
            const data = await this.model.create(product);
             return data;
         } catch (error) {
-            console.log(error.message)
-
-            return 
+            return error
         }
     }
 
@@ -57,7 +55,7 @@ export class ProductsMongo{
             }
             return data;
         } catch (error) {
-            return
+            return error
         }
     }
 
@@ -66,7 +64,7 @@ export class ProductsMongo{
             await this.model.findByIdAndDelete(id);
             return {message: "Producto eliminado"};
         } catch (error) {
-            return
+            return error
         }
     };
 

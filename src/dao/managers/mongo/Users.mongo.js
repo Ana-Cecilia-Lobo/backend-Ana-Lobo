@@ -47,12 +47,29 @@ export class UserMongo{
         }
     };
 
-    async deleteUser(userId){
+    async deleteUser(){
         try {
             await this.model.deleteOne({ "email" : "roberto@gmail.com" });
             return {message: "Usuario eliminado"};
         } catch (error) {
             return
+        }
+    }
+    async getUsers(){
+        try{  
+            const users = await this.model.find().lean();
+            return users; 
+        }catch(error){
+            throw new Error(`Error al capturar los productos ${error.message}`);
+        }
+    }
+
+    async deleteUserId(id){
+        try{  
+            const user = await this.model.findByIdAndDelete(id);
+            return {message: "Usuario eliminado"};
+        }catch(error){
+            return error
         }
     }
 }

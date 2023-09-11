@@ -1,4 +1,9 @@
 import { UsersService } from "../repository/users.services.js";
+import { CartsService } from "../repository/cart.services.js";
+import { getUsersDto } from "../dao/dto/getUsers.dto.js";
+import { logger } from "../utils/logger.js";
+import { sendInactivityEmail } from "../utils/message.js";
+import { stringify } from "uuid";
 
 export class UsersController{
 
@@ -24,7 +29,7 @@ export class UsersController{
                 rol:rol
             };
 
-            const update = await UsersService.updateUser(userId, newUser )
+            const update = await UsersService.updateUser(userId, newUser)
 
             res.send(update)
 
@@ -92,6 +97,111 @@ export class UsersController{
 
         } catch (error) {
             console.log(error.message)
+            res.status(400).json({status:"error", message:error.message});
+        }
+    }
+
+    static getUsers = async(req,res)=>{
+        try {
+            
+            const users = await UsersService.getUsers();
+            console.log(users.length)
+            let usersArray = [];
+            for(let i = 0; i < users.length; i++ ){
+                const usersInfo = new getUsersDto(users[i]);
+                usersArray.push(usersInfo)
+            }
+            res.json(usersArray)
+            
+        } catch (error) {
+            logger.error(error.message)
+            res.status(400).json({status:"error", message:error.message});
+        }
+        
+    }
+
+    static deleteUsers = async(req,res)=>{
+        try {
+            const users = await UsersService.getUsers();
+
+            let deleteUsers = [];
+            for(let i = 0; i < users.length; i++ ){
+                const user = users[i];
+
+                const last_connection = user.last_connection
+                const today = new Date()
+
+                function sumarDias(fecha){
+                    fecha.setDate(fecha.getDate() + 2);
+                    return fecha;
+                  }
+                const connection = sumarDias(last_connection);
+
+                if(connection < today){
+                    deleteUsers.push(user)
+                }
+            }
+            console.log(deleteUsers)
+
+            if(deleteUsers.length <= 0){
+                return res.json(`No se ha eliminado ningun usuario por inactividad`);
+            }
+            for(let i = 0; i < deleteUsers.length; i++ ){
+                const user = deleteUsers[i];
+                const id = JSON.stringify(user._id).replace('"', '').replace('"', '')
+
+                const cartId = JSON.stringify(user.cart).replace('"', '').replace('"', '')
+                const deletedcart = CartsService.deleteCart(cartId)
+                const deleted = UsersService.deleteUserId(id);
+                console.log(deleted, deletedcart)
+                await sendInactivityEmail(user.email);    
+            }
+            res.json(`Se ha enviado un enlace a los correos para informarles sobre su inactividad.`)
+            
+        } catch (error) {
+            logger.error(error.message)
+            res.status(400).json({status:"error", message:error.message});
+        }
+    }
+
+    static updateAnUser = async(req,res)=>{
+        try {
+            const id = req.params.uid
+            let rol = req.params.rol
+
+            const user = await UsersService.getUserById(id);
+
+            if(rol == "user"){
+                rol = "premium"
+            }else if(rol == "premium"){
+                rol = "user"
+            }
+            const newUser = {
+                ...user,
+                rol:rol
+            };
+
+            const update = await UsersService.updateUser(id, newUser)
+            res.json(update)
+
+        } catch (error) {
+            logger.error(error.message)
+            res.status(400).json({status:"error", message:error.message});
+        }
+    }
+
+    static deleteUserbyId = async(req,res)=>{
+        try {
+            const id = req.params.uid
+
+            const user = await UsersService.getUserById(id);
+            const cartId = JSON.stringify(user.cart).replace('"', '').replace('"', '')
+            const deletedcart = CartsService.deleteCart(cartId)
+            const deleteUser = await UsersService.deleteUserId(id)
+            console.log(deleteUser, deletedcart)
+            res.json({status:"correct", message:"usuario eliminado"})
+        } catch (error) {
+            logger.error(error.message)
             res.status(400).json({status:"error", message:error.message});
         }
     }

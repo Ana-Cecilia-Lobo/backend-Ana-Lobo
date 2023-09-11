@@ -40,3 +40,32 @@ export const sendRecoveryEmail = async(userEmail,token)=>{
         `
     })
 }
+
+export const sendInactivityEmail = async(userEmail)=>{
+
+    await transporter.sendMail({
+
+        from:"E-commerce Ana",
+        to: userEmail,
+        subject:"Su cuenta ha sido eliminada por inactividad",
+        html:`
+            <div>
+                <p>Hola, lamentamos informarle que su cuenta ha sido eliminada por inactividad</p>
+            </div>
+        `
+    })
+}
+
+export const sendDeletedProductEmail = async(userEmail)=>{
+    await transporter.sendMail({
+
+        from:"E-commerce Ana",
+        to: userEmail,
+        subject:"Un producto que le pertenece, ha sido eliminado",
+        html:`
+            <div>
+                <p>Hola, le informamos que un producto que le pertenece, ha sido eliminado</p>
+            </div>
+        `
+    })
+}
